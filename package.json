@@ -1,8 +1,17 @@
 {
-  "name": "affine-fumadocs-publisher",
-  "private": true,
+  "name": "@affine-fumadocs/publisher",
+  "private": false,
   "version": "0.1.0",
   "type": "module",
+  "main": "./packages/publisher/src/index.mjs",
+  "types": "./packages/publisher/src/index.d.ts",
+  "exports": {
+    ".": { "types": "./packages/publisher/src/index.d.ts", "default": "./packages/publisher/src/index.mjs" },
+    "./bridge-client": { "types": "./packages/publisher/src/bridge-client.d.ts", "default": "./packages/publisher/src/bridge-client.mjs" },
+    "./snapshot": { "types": "./packages/publisher/src/snapshot.d.ts", "default": "./packages/publisher/src/snapshot.mjs" },
+    "./poller": { "types": "./packages/publisher/src/poller.d.ts", "default": "./packages/publisher/src/poller.mjs" },
+    "./service": { "types": "./packages/publisher/src/service.d.ts", "default": "./packages/publisher/src/service.mjs" }
+  },
   "scripts": {
     "test": "node --test packages/publisher/test/*.test.mjs",
     "check": "node --check packages/publisher/src/index.mjs && node --check packages/publisher/src/bridge-client.mjs && node --check packages/publisher/src/snapshot.mjs && node --check packages/publisher/src/poller.mjs && node --check packages/publisher/src/service.mjs"
