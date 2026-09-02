@@ -16,6 +16,12 @@ const safeSlug = (slug) => {
 };
 const yaml = (data) => Object.entries(data).filter(([, value]) => value !== undefined)
   .map(([key, value]) => `${key}: ${JSON.stringify(value)}`).join('\n');
+// AFFiNE Markdown may contain literal braces (for example, a user's note syntax).
+// Plain Fumadocs MDX treats them as JavaScript expressions, so preserve them as text.
+const knownCodeLanguages = new Set(['bash', 'c', 'cpp', 'css', 'go', 'html', 'java', 'js', 'json', 'jsx', 'markdown', 'md', 'php', 'python', 'py', 'rs', 'rust', 'sh', 'sql', 'text', 'ts', 'tsx', 'xml', 'yaml', 'yml']);
+const mdxSafe = (markdown) => markdown
+  .replace(/(?<!\\)[{}]/g, (character) => `\\${character}`)
+  .replace(/^```([^\s]*)\s*$/gm, (_fence, language) => knownCodeLanguages.has(language.toLowerCase()) ? `\`\`\`${language}` : '```text');
 
 const workspaceId = required('AFFINE_WORKSPACE_ID');
 const endpoint = required('AFFINE_BRIDGE_MCP_URL');
@@ -41,7 +47,7 @@ await replaceDirectoryAtomically(output, async (temporary) => {
   for (const page of pages) {
     const raw = await client.readDocument(workspaceId, page.doc.id);
     const markdown = await materializeAffineBlobAssets({
-      markdown: raw, workspaceId, publicRoot, assets, cookie: process.env.AFFINE_BLOB_COOKIE?.trim(),
+      markdown: mdxSafe(raw), workspaceId, publicRoot, assets, cookie: process.env.AFFINE_BLOB_COOKIE?.trim(),
       blobBaseUrl: process.env.AFFINE_BLOB_BASE_URL,
       onUnavailable: (_key, message) => { throw new Error(message); },
     });

@@ -6,3 +6,4 @@ dist/
 !templates/fumadocs/.env.publisher.example
 .affine-publisher/
 coverage/
+.DS_Store
