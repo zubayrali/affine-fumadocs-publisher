@@ -69,3 +69,12 @@ test("refreshes once per document fingerprint", async () => {
   assert.equal(await poller.poll(), false);
   assert.equal(refreshes, 1);
 });
+
+test("refreshes once when a publisher process restarts even with the same fingerprint", async () => {
+  const statePath = `${await import("node:fs/promises").then(({ mkdtemp }) => mkdtemp("/tmp/affine-poller-restart-"))}/state.json`;
+  const options = { client: { listDocuments: async () => [{ id: "doc", inTrash: false }] }, workspaceId: "workspace", statePath, log: () => {}, error: () => {} };
+  let refreshes = 0;
+  await createSnapshotPoller({ ...options, refresh: async () => { refreshes += 1; } }).poll();
+  await createSnapshotPoller({ ...options, refresh: async () => { refreshes += 1; } }).poll();
+  assert.equal(refreshes, 2);
+});
