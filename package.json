@@ -1,0 +1,11 @@
+{
+  "name": "affine-fumadocs-publisher",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "test": "node --test packages/publisher/test/*.test.mjs",
+    "check": "node --check packages/publisher/src/index.mjs && node --check packages/publisher/src/bridge-client.mjs && node --check packages/publisher/src/snapshot.mjs && node --check packages/publisher/src/poller.mjs && node --check packages/publisher/src/service.mjs"
+  },
+  "license": "MIT"
+}

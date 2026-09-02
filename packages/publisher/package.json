@@ -1,0 +1,15 @@
+{
+  "name": "@affine-fumadocs/publisher",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./src/index.mjs",
+  "types": "./src/index.d.ts",
+  "exports": {
+    ".": { "types": "./src/index.d.ts", "default": "./src/index.mjs" },
+    "./bridge-client": { "types": "./src/bridge-client.d.ts", "default": "./src/bridge-client.mjs" },
+    "./snapshot": { "types": "./src/snapshot.d.ts", "default": "./src/snapshot.mjs" },
+    "./poller": { "types": "./src/poller.d.ts", "default": "./src/poller.mjs" },
+    "./service": { "types": "./src/service.d.ts", "default": "./src/service.mjs" }
+  },
+  "license": "MIT"
+}
