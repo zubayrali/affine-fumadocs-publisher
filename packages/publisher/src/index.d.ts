@@ -34,4 +34,6 @@ export interface AffinePublicationMetadata {
 export const AFFINE_PUBLICATION_PROPERTIES: Readonly<Record<keyof Omit<AffinePublicationMetadata, "title">, string>>;
 export function definePublisherConfig(input: PublisherConfigInput): PublisherConfig;
 export function metadataFromAffineProperties(properties: Record<string, unknown> | undefined, title: string | undefined): AffinePublicationMetadata;
+export function stripLegacyFrontmatter(markdown: string): string;
+export function normalizeMarkdownFences(markdown: string): string;
 export function validatePublication(metadata: AffinePublicationMetadata): string[];

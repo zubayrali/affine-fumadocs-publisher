@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { definePublisherConfig, metadataFromAffineProperties, validatePublication } from "../src/index.mjs";
+import { definePublisherConfig, metadataFromAffineProperties, normalizeMarkdownFences, stripLegacyFrontmatter, validatePublication } from "../src/index.mjs";
 import { createAffineBridgeMcpClient } from "../src/bridge-client.mjs";
 import { materializeAffineBlobAssets } from "../src/snapshot.mjs";
 import { createSnapshotPoller } from "../src/poller.mjs";
@@ -15,6 +15,18 @@ test("requires native AFFiNE publication fields", () => {
   const metadata = metadataFromAffineProperties({ Slug: "guides/getting-started", Locale: "en", Publish: true }, "Getting started");
   assert.deepEqual(validatePublication(metadata), []);
   assert.match(validatePublication({ title: "Draft", slug: "draft", locale: "en", publish: true, draft: true })[0], /Draft/);
+});
+
+test("removes legacy vault frontmatter and preserves the AFFiNE article", () => {
+  const legacy = "``` yaml\ntitle: Old title\nslug: dictionary/example\nlocale: en\npublish: true\nsourcePath: dictionary/example.md\ncontentSource: affine-import\n```\n\n# Article\n";
+  assert.equal(stripLegacyFrontmatter(legacy), "# Article\n");
+  assert.equal(stripLegacyFrontmatter(legacy.replace("``` yaml", "```yaml")), "# Article\n");
+  assert.equal(stripLegacyFrontmatter("``` yaml\nanswer: 42\n```\n"), "``` yaml\nanswer: 42\n```\n");
+});
+
+test("normalizes spaced AFFiNE fence languages without corrupting closers", () => {
+  assert.equal(normalizeMarkdownFences("``` yaml\nanswer: 42\n```\nText"), "```yaml\nanswer: 42\n```\nText");
+  assert.equal(normalizeMarkdownFences("``` yaml\nanswer: 42\n```text\nText"), "```yaml\nanswer: 42\n```\nText");
 });
 
 test("initializes a token-protected streamable MCP bridge once", async () => {

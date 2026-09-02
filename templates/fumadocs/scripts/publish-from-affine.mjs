@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { createAffineBridgeMcpClient } from '@affine-fumadocs/publisher/bridge-client';
-import { metadataFromAffineProperties, validatePublication } from '@affine-fumadocs/publisher';
+import { metadataFromAffineProperties, normalizeMarkdownFences, stripLegacyFrontmatter, validatePublication } from '@affine-fumadocs/publisher';
 import { materializeAffineBlobAssets, replaceDirectoryAtomically } from '@affine-fumadocs/publisher/snapshot';
 
 const required = (name) => {
@@ -16,12 +16,20 @@ const safeSlug = (slug) => {
 };
 const yaml = (data) => Object.entries(data).filter(([, value]) => value !== undefined)
   .map(([key, value]) => `${key}: ${JSON.stringify(value)}`).join('\n');
+const rootIndex = () => `---
+title: "Documentation"
+description: "Published from AFFiNE. Browse the collection from the sidebar."
+---
+
+# Documentation
+
+This documentation is published from AFFiNE. Use the sidebar or search to explore the collection.
+`;
 // AFFiNE Markdown may contain literal braces (for example, a user's note syntax).
 // Plain Fumadocs MDX treats them as JavaScript expressions, so preserve them as text.
-const knownCodeLanguages = new Set(['bash', 'c', 'cpp', 'css', 'go', 'html', 'java', 'js', 'json', 'jsx', 'markdown', 'md', 'php', 'python', 'py', 'rs', 'rust', 'sh', 'sql', 'text', 'ts', 'tsx', 'xml', 'yaml', 'yml']);
 const mdxSafe = (markdown) => markdown
   .replace(/(?<!\\)[{}]/g, (character) => `\\${character}`)
-  .replace(/^```([^\s]*)\s*$/gm, (_fence, language) => knownCodeLanguages.has(language.toLowerCase()) ? `\`\`\`${language}` : '```text');
+  .replace(/<!--([\s\S]*?)-->/g, (_comment, body) => `{/*${body.replace(/\*\//g, '* /')}*/}`);
 
 const workspaceId = required('AFFINE_WORKSPACE_ID');
 const endpoint = required('AFFINE_BRIDGE_MCP_URL');
@@ -47,13 +55,18 @@ await replaceDirectoryAtomically(output, async (temporary) => {
   for (const page of pages) {
     const raw = await client.readDocument(workspaceId, page.doc.id);
     const markdown = await materializeAffineBlobAssets({
-      markdown: mdxSafe(raw), workspaceId, publicRoot, assets, cookie: process.env.AFFINE_BLOB_COOKIE?.trim(),
+      markdown: mdxSafe(normalizeMarkdownFences(stripLegacyFrontmatter(raw))), workspaceId, publicRoot, assets, cookie: process.env.AFFINE_BLOB_COOKIE?.trim(),
       blobBaseUrl: process.env.AFFINE_BLOB_BASE_URL,
       onUnavailable: (_key, message) => { throw new Error(message); },
     });
     const destination = path.join(temporary, `${page.slug}.mdx`);
     await fs.mkdir(path.dirname(destination), { recursive: true });
     await fs.writeFile(destination, `---\n${yaml({ ...page.metadata, tags: undefined, affineDocId: page.doc.id })}\n---\n\n${markdown.trim()}\n`);
+  }
+  // A fresh AFFiNE workspace normally has no document with the reserved
+  // `index` slug. Still generate a docs-root page so `/docs` is always valid.
+  if (!pages.some((page) => page.slug === 'index')) {
+    await fs.writeFile(path.join(temporary, 'index.mdx'), rootIndex());
   }
   await fs.writeFile(path.join(temporary, 'meta.json'), `${JSON.stringify({ pages: pages.map((page) => page.slug) }, null, 2)}\n`);
 });

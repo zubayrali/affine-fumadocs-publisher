@@ -54,6 +54,54 @@ export function metadataFromAffineProperties(properties, title) {
   };
 }
 
+/**
+ * Removes frontmatter that was preserved as a code block by AFFiNE's Markdown
+ * importer. Publication metadata belongs in AFFiNE properties, never in the
+ * reader-facing article body.
+ */
+export function stripLegacyFrontmatter(markdown) {
+  const source = typeof markdown === "string" ? markdown.replace(/^\uFEFF/, "") : "";
+  const plainFrontmatter = /^---[ \t]*\r?\n[\s\S]*?\r?\n---[ \t]*(?:\r?\n|$)/;
+  if (plainFrontmatter.test(source)) return source.replace(plainFrontmatter, "");
+
+  const fencedFrontmatter = /^```[ \t]*ya?ml[ \t]*\r?\n([\s\S]*?)\r?\n```[ \t]*(?:\r?\n|$)/i;
+  const match = source.match(fencedFrontmatter);
+  if (!match) return source;
+
+  // Only remove a fenced block when it is clearly the old vault metadata,
+  // rather than an intentionally authored YAML example.
+  const legacyFields = /^(?:slug|locale|publish|draft|sourcePath|contentSource):/m;
+  return legacyFields.test(match[1]) ? source.slice(match[0].length).replace(/^\r?\n/, "") : source;
+}
+
+/**
+ * AFFiNE may export an opening fence with a space before its language
+ * (``` yaml). Normalize it before MDX sees it; otherwise a later bare fence
+ * can be rewritten as a second opening fence and swallow the whole article.
+ */
+export function normalizeMarkdownFences(markdown) {
+  const knownLanguages = new Set(["bash", "c", "cpp", "css", "go", "html", "java", "js", "json", "jsx", "markdown", "md", "php", "python", "py", "rs", "rust", "sh", "sql", "text", "ts", "tsx", "xml", "yaml", "yml"]);
+  let open = false;
+  return markdown.split(/\r?\n/).map((line) => {
+    const match = line.match(/^(\s*)```(?:\s*([^\s`]+))?\s*$/);
+    if (!match) return line;
+    const [, indent, language] = match;
+    // Older publisher previews rewrote a closing fence to ` ```text`.
+    // Treat that impossible-in-a-code-block marker as the closer too, so a
+    // regenerated snapshot can repair existing output in place.
+    if (open && (!language || language.toLowerCase() === "text")) {
+      open = false;
+      return `${indent}\`\`\``;
+    }
+    if (!open) {
+      open = true;
+      const normalized = language?.toLowerCase();
+      return `${indent}\`\`\`${normalized && knownLanguages.has(normalized) ? normalized : "text"}`;
+    }
+    return line;
+  }).join("\n");
+}
+
 export function validatePublication(metadata) {
   const errors = [];
   if (!metadata?.title?.trim()) errors.push("A document title is required.");
