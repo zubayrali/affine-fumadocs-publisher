@@ -3,5 +3,6 @@ dist/
 .env
 .env.*
 !.env.example
+!templates/fumadocs/.env.publisher.example
 .affine-publisher/
 coverage/
