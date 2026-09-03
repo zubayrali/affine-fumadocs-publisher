@@ -17,6 +17,14 @@ test("requires native AFFiNE publication fields", () => {
   assert.match(validatePublication({ title: "Draft", slug: "draft", locale: "en", publish: true, draft: true })[0], /Draft/);
 });
 
+test("prefers the native AFFiNE Title property over the document name", () => {
+  const metadata = metadataFromAffineProperties(
+    { Title: "On Faqr: The Secret of the Path", Slug: "articles/on-faqr" },
+    "on-faqr",
+  );
+  assert.equal(metadata.title, "On Faqr: The Secret of the Path");
+});
+
 test("removes legacy vault frontmatter and preserves the AFFiNE article", () => {
   const legacy = "``` yaml\ntitle: Old title\nslug: dictionary/example\nlocale: en\npublish: true\nsourcePath: dictionary/example.md\ncontentSource: affine-import\n```\n\n# Article\n";
   assert.equal(stripLegacyFrontmatter(legacy), "# Article\n");
@@ -68,6 +76,25 @@ test("refreshes once per document fingerprint", async () => {
   assert.equal(await poller.poll(), true);
   assert.equal(await poller.poll(), false);
   assert.equal(refreshes, 1);
+});
+
+test("refreshes when only the AFFiNE Yjs source revision changes", async () => {
+  const statePath = `${await import("node:fs/promises").then(({ mkdtemp }) => mkdtemp("/tmp/affine-poller-canvas-"))}/state.json`;
+  let sourceRevision = "canvas-v1";
+  let refreshes = 0;
+  const poller = createSnapshotPoller({
+    client: { listDocuments: async () => [{ id: "doc", inTrash: false, sourceRevision }] },
+    workspaceId: "workspace",
+    statePath,
+    refresh: async () => { refreshes += 1; },
+    log: () => {},
+    error: () => {},
+  });
+  assert.equal(await poller.poll(), true);
+  assert.equal(await poller.poll(), false);
+  sourceRevision = "canvas-v2";
+  assert.equal(await poller.poll(), true);
+  assert.equal(refreshes, 2);
 });
 
 test("refreshes once when a publisher process restarts even with the same fingerprint", async () => {

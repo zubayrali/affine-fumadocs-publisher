@@ -51,10 +51,21 @@ export function createAffineBridgeMcpClient(options) {
     async listDocuments(workspaceId) {
       const documents = []; let after;
       do {
-        const value = record(await callTool("list_docs", { workspaceId, first: 200, ...(after ? { after } : {}) }));
+        const value = record(await callTool("list_docs", {
+          workspaceId,
+          first: 200,
+          includeRevisions: true,
+          ...(after ? { after } : {}),
+        }));
         for (const edge of Array.isArray(value?.edges) ? value.edges : []) {
           const node = record(record(edge)?.node);
-          if (typeof node?.id === "string") documents.push({ id: node.id, title: typeof node.title === "string" ? node.title : null, updatedAt: typeof node.updatedAt === "string" || typeof node.updatedAt === "number" ? String(node.updatedAt) : null, inTrash: node.inTrash === true });
+          if (typeof node?.id === "string") documents.push({
+            id: node.id,
+            title: typeof node.title === "string" ? node.title : null,
+            updatedAt: typeof node.updatedAt === "string" || typeof node.updatedAt === "number" ? String(node.updatedAt) : null,
+            sourceRevision: typeof node.sourceRevision === "string" ? node.sourceRevision : null,
+            inTrash: node.inTrash === true,
+          });
         }
         const pageInfo = record(value?.pageInfo); after = pageInfo?.hasNextPage === true && typeof pageInfo.endCursor === "string" ? pageInfo.endCursor : undefined;
       } while (after);
