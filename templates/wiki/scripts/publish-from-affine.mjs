@@ -3,6 +3,7 @@ import path from 'node:path';
 import { createAffineBridgeMcpClient } from '@affine-fumadocs/publisher/bridge-client';
 import {
   findLinkedDocumentIds,
+  findUnpublishedLinkedDocumentIds,
   metadataFromAllAffineProperties,
   normalizeMarkdownFences,
   rewriteAffineDocumentLinks,
@@ -44,7 +45,8 @@ const client = createAffineBridgeMcpClient({ endpoint, token: process.env.AFFINE
 const output = path.join(process.cwd(), 'content', 'docs');
 const publicRoot = path.join(process.cwd(), 'public');
 const assets = new Map();
-const diagnostics = [];
+const publishErrors = [];
+const warnings = [];
 const docs = await client.listDocuments(workspaceId);
 const pages = [];
 
@@ -53,10 +55,10 @@ for (const doc of docs) {
     const metadata = metadataFromAllAffineProperties(await client.readDocumentProperties(workspaceId, doc.id), doc.title ?? undefined);
   if (metadata.publish !== true || metadata.draft === true) continue;
   const errors = validatePublication(metadata);
-  if (errors.length) { diagnostics.push({ docId: doc.id, errors }); continue; }
+  if (errors.length) { publishErrors.push({ docId: doc.id, errors }); continue; }
   pages.push({ doc, metadata, slug: safeSlug(metadata.slug) });
 }
-if (diagnostics.length) throw new Error(`Cannot publish ${diagnostics.length} AFFiNE document(s): ${diagnostics.map((item) => item.docId).join(', ')}`);
+if (publishErrors.length) throw new Error(`Cannot publish ${publishErrors.length} AFFiNE document(s): ${publishErrors.map((item) => item.docId).join(', ')}`);
 
   const pagesById = new Map(pages.map((page) => [page.doc.id, {
     title: page.metadata.title ?? page.doc.title ?? page.slug,
@@ -67,6 +69,13 @@ if (diagnostics.length) throw new Error(`Cannot publish ${diagnostics.length} AF
     for (const page of pages) {
       const raw = await client.readDocument(workspaceId, page.doc.id);
       const linkedDocumentIds = findLinkedDocumentIds(raw);
+      const unpublishedLinks = findUnpublishedLinkedDocumentIds(raw, pagesById);
+      if (unpublishedLinks.length) {
+        warnings.push({
+          docId: page.doc.id,
+          message: `Left ${unpublishedLinks.length} AFFiNE document link(s) unchanged because the target is not published: ${unpublishedLinks.join(', ')}`,
+        });
+      }
       const rewritten = rewriteAffineDocumentLinks(stripLegacyFrontmatter(raw), pagesById);
       const markdown = await materializeAffineBlobAssets({
         markdown: mdxSafe(normalizeMarkdownFences(rewritten)), workspaceId, publicRoot, assets, cookie: process.env.AFFINE_BLOB_COOKIE?.trim(),
@@ -88,4 +97,8 @@ if (diagnostics.length) throw new Error(`Cannot publish ${diagnostics.length} AF
   }
   await fs.writeFile(path.join(temporary, 'meta.json'), `${JSON.stringify({ pages: pages.map((page) => page.slug) }, null, 2)}\n`);
 });
+if (warnings.length) {
+  console.warn(`Published with ${warnings.length} warning(s):`);
+  for (const warning of warnings) console.warn(`- ${warning.docId}: ${warning.message}`);
+}
 console.log(`Published ${pages.length} AFFiNE documents into content/docs.`);

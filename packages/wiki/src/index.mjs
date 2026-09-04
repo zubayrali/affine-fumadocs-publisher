@@ -111,4 +111,31 @@ export function getBacklinks(currentUrl, pages) {
   });
 }
 
+/**
+ * Pages with no inbound published links. Index/home roots and tag listing pages
+ * are excluded so the orphan list stays useful for authored notes.
+ * @param {Iterable<{ url: string, data?: Record<string, unknown> }>} pages
+ * @param {{ rootUrls?: Iterable<string>, excludeUrlPrefix?: string }} [options]
+ */
+export function getOrphanPages(pages, options = {}) {
+  const list = [...pages];
+  const incoming = new Set();
+  for (const page of list) {
+    const links = page.data?.outgoingLinks;
+    if (!Array.isArray(links)) continue;
+    for (const link of links) {
+      if (typeof link === "string" && link) incoming.add(link);
+    }
+  }
+
+  const roots = new Set(options.rootUrls ?? ["/docs", "/docs/", "/docs/index"]);
+  const excludePrefix = options.excludeUrlPrefix ?? "/docs/tags";
+
+  return list.filter((page) => {
+    if (roots.has(page.url) || page.url === "/docs/index") return false;
+    if (excludePrefix && page.url.startsWith(excludePrefix)) return false;
+    return !incoming.has(page.url);
+  });
+}
+
 export { FEATURE_DEFAULTS };

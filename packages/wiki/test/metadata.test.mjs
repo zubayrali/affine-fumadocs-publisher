@@ -4,6 +4,7 @@ import {
   formatPropertyLabel,
   getBacklinks,
   getDisplayProperties,
+  getOrphanPages,
   getTagPrefixes,
   normalizeTags,
   tagHref,
@@ -21,6 +22,19 @@ test("finds backlinks from generated outgoing-link metadata", () => {
     { url: "/docs/two", data: { outgoingLinks: [] } },
   ];
   assert.deepEqual(getBacklinks("/docs/two", pages), [pages[0]]);
+});
+
+test("finds orphan pages that have no inbound published links", () => {
+  const pages = [
+    { url: "/docs", data: { outgoingLinks: ["/docs/features"] } },
+    { url: "/docs/features", data: { outgoingLinks: [] } },
+    { url: "/docs/orphan", data: { outgoingLinks: [] } },
+    { url: "/docs/tags/guide", data: { outgoingLinks: [] } },
+  ];
+  assert.deepEqual(
+    getOrphanPages(pages).map((page) => page.url),
+    ["/docs/orphan"],
+  );
 });
 
 test("selects safe display properties", () => {

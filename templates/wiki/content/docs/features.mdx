@@ -2,12 +2,29 @@
 title: Wiki feature baseline
 description: Reusable capabilities included by the template.
 tags: [wiki, publishing/features]
+outgoingLinks: ["/docs"]
 affineProperties: {"Audience":"Editors","Status":"Ready","Review date":"2026-09-04"}
 ---
 
 # Wiki feature baseline
 
 The template currently includes Fumadocs search and machine-readable routes,
-native AFFiNE publication properties, custom page properties, and hierarchical
-tag browsing. The remaining feature modules are tracked in the repository's
-wiki template specification and are being added as tested vertical slices.
+native AFFiNE publication properties, custom page properties, hierarchical tag
+browsing, AFFiNE document-link rewriting, backlinks, orphan detection, and
+hover link previews.
+
+## AFFiNE document links
+
+AFFiNE exports LinkedPage references as Markdown links such as
+`[Guide](/workspace/<workspaceId>/<docId>)`. The publisher rewrites published
+targets to public `/docs/...` routes and records `outgoingLinks` for backlinks.
+Obsidian `[[wikilink]]` syntax is not supported.
+
+Hover a published internal link like [Welcome](/docs) to preview its content.
+
+## Still in progress
+
+Body-level note transclusion is deferred: AFFiNE's Markdown export flattens
+embed-linked documents into the same link form, so the snapshot cannot recover
+embedded bodies yet. Graph, reader tools, canvas, databases, multilingual
+homepage controls, and Publishing Studio remain later vertical slices.

@@ -126,7 +126,15 @@ export function metadataFromAllAffineProperties(properties, title) {
   );
 }
 
-const AFFINE_DOCUMENT_LINK = /\[([^\]]*)\]\(\/?workspace\/[^/)]+\/([A-Za-z0-9_-]+)(?::[^)]*)?\)/g;
+/**
+ * AFFiNE's Markdown export turns LinkedPage references and embed-linked-doc
+ * blocks into ordinary Markdown links of the form:
+ *   [title](/workspace/<workspaceId>/<docId>)
+ * Absolute AFFiNE origins and optional `:mode` / query / hash suffixes are also
+ * accepted. Obsidian `[[wikilink]]` syntax is intentionally unsupported.
+ */
+const AFFINE_DOCUMENT_LINK =
+  /\[([^\]]*)\]\((?:https?:\/\/[^)\s]+)?\/?workspace\/[^/)\s]+\/([A-Za-z0-9_-]+)(?:(?::[^)\s#?]*)?(?:\?[^)\s#]*)?(?:#[^)\s]*)?)?\)/g;
 
 export function findLinkedDocumentIds(markdown) {
   const ids = new Set();
@@ -136,12 +144,17 @@ export function findLinkedDocumentIds(markdown) {
   return [...ids];
 }
 
+export function findUnpublishedLinkedDocumentIds(markdown, pagesById) {
+  return findLinkedDocumentIds(markdown).filter((id) => !pagesById.has(id));
+}
+
 export function rewriteAffineDocumentLinks(markdown, pagesById, basePath = "/docs") {
   const prefix = basePath === "/" ? "" : `/${basePath.replace(/^\/+|\/+$/g, "")}`;
   return String(markdown).replace(AFFINE_DOCUMENT_LINK, (original, label, linkedId) => {
     const page = pagesById.get(linkedId);
     if (!page) return original;
-    return `[${label || page.title}](${prefix}/${page.slug.replace(/^\/+/, "")})`;
+    const href = `${prefix}/${page.slug.replace(/^\/+/, "")}`;
+    return `[${label || page.title}](${href})`;
   });
 }
 

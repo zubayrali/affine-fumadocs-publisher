@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   findLinkedDocumentIds,
+  findUnpublishedLinkedDocumentIds,
   metadataFromAllAffineProperties,
   rewriteAffineDocumentLinks,
 } from "../src/index.mjs";
@@ -28,10 +29,23 @@ test("preserves JSON-safe AFFiNE properties and normalizes tags", () => {
 });
 
 test("rewrites published AFFiNE document links and preserves unknown targets", () => {
-  const markdown = "[Guide](/workspace/workspace-id/doc-one) and [Private](/workspace/workspace-id/doc-two)";
+  const markdown = [
+    "[Guide](/workspace/workspace-id/doc-one)",
+    "[Private](/workspace/workspace-id/doc-two)",
+    "[](https://affine.local/workspace/workspace-id/doc-one:mode)",
+    "Read [[obsidian-style]] remains plain text",
+  ].join(" and ");
+  const pagesById = new Map([["doc-one", { title: "Guide", slug: "guides/start" }]]);
+
   assert.deepEqual(findLinkedDocumentIds(markdown), ["doc-one", "doc-two"]);
+  assert.deepEqual(findUnpublishedLinkedDocumentIds(markdown, pagesById), ["doc-two"]);
   assert.equal(
-    rewriteAffineDocumentLinks(markdown, new Map([["doc-one", { title: "Guide", slug: "guides/start" }]])),
-    "[Guide](/docs/guides/start) and [Private](/workspace/workspace-id/doc-two)",
+    rewriteAffineDocumentLinks(markdown, pagesById),
+    [
+      "[Guide](/docs/guides/start)",
+      "[Private](/workspace/workspace-id/doc-two)",
+      "[Guide](/docs/guides/start)",
+      "Read [[obsidian-style]] remains plain text",
+    ].join(" and "),
   );
 });

@@ -15,11 +15,15 @@ language while adding the reusable behavior expected from a serious wiki.
 ## Included wiki baseline
 
 The implemented baseline includes Fumadocs search and machine-readable routes,
-native publication controls, custom AFFiNE properties, and hierarchical tags.
+native publication controls, custom AFFiNE properties, hierarchical tags,
+AFFiNE-native document link rewriting, backlinks, orphan detection, and hover
+link previews. Obsidian `[[wikilink]]` syntax is not part of the contract.
+
 The target contract additionally covers multilingual routing, homepage controls,
-wikilinks, transclusion, backlinks, graphs, reader mode, lightboxes, slides,
-rich Markdown, AFFiNE canvases and database views, publishing diagnostics, and
-feeds. Progress and acceptance criteria live in
+knowledge graphs, reader mode, lightboxes, slides, rich Markdown, AFFiNE
+canvases and database views, publishing diagnostics, and feeds. Body-level note
+transclusion remains deferred until the bridge can export embed bodies.
+Progress and acceptance criteria live in
 [`docs/wiki-template-spec.md`](./docs/wiki-template-spec.md).
 
 Reusable behavior lives behind `@affine-fumadocs/wiki`; identity, content,

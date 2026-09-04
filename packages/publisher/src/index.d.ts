@@ -41,6 +41,10 @@ export function definePublisherConfig(input: PublisherConfigInput): PublisherCon
 export function metadataFromAffineProperties(properties: Record<string, unknown> | undefined, title: string | undefined): AffinePublicationMetadata;
 export function metadataFromAllAffineProperties(properties: Record<string, unknown> | undefined, title: string | undefined): AffinePublishedDocumentMetadata;
 export function findLinkedDocumentIds(markdown: string): string[];
+export function findUnpublishedLinkedDocumentIds(
+  markdown: string,
+  pagesById: ReadonlyMap<string, { title: string; slug: string }>,
+): string[];
 export function rewriteAffineDocumentLinks(
   markdown: string,
   pagesById: ReadonlyMap<string, { title: string; slug: string }>,

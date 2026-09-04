@@ -52,3 +52,7 @@ export function getBacklinks<T extends { url: string; data?: Record<string, unkn
   currentUrl: string,
   pages: Iterable<T>,
 ): T[];
+export function getOrphanPages<T extends { url: string; data?: Record<string, unknown> }>(
+  pages: Iterable<T>,
+  options?: { rootUrls?: Iterable<string>; excludeUrlPrefix?: string },
+): T[];

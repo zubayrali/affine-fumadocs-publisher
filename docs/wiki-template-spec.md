@@ -25,7 +25,9 @@ template and downstream sites.
 - Native AFFiNE publication properties, tags, aliases, dates, and ordering
 - Multilingual locale registry and translation-key routing
 - AFFiNE-managed homepage control documents
-- Wikilinks, transclusion, link previews, backlinks, and orphan links
+- AFFiNE-native document links (LinkedPage / embed-linked-doc Markdown exports),
+  link previews, backlinks, and orphan links. Obsidian `[[wikilink]]` syntax is
+  out of scope after the Obsidian → AFFiNE migration.
 - Full-text search, tags, page properties, reading time, and reader mode
 - Global and local knowledge graphs
 - Lightbox and gallery behavior
@@ -40,11 +42,15 @@ template and downstream sites.
 
 - Complete: neutral monorepo/package boundary, executable Fumadocs template,
   atomic AFFiNE snapshot publishing, media materialization, publication controls,
-  native custom properties, hierarchical tags, internal AFFiNE link rewriting,
-  and generated backlinks.
-- Next slices: wikilinks and transclusion, global/local graph, reader tools and
-  lightbox, canvas, databases, multilingual/homepage controls, then Publishing
-  Studio and the remaining rich-content/output modules.
+  native custom properties, hierarchical tags, AFFiNE-native document link
+  rewriting (including absolute workspace URLs), unpublished-link diagnostics,
+  generated backlinks, orphan-page detection, and hover link previews.
+- Deferred in this slice: body-level note transclusion. AFFiNE's Markdown export
+  flattens embed-linked documents into ordinary workspace links, so embedded
+  bodies are not recoverable from the current bridge export.
+- Next slices: global/local graph, reader tools and lightbox, canvas, databases,
+  multilingual/homepage controls, then Publishing Studio and the remaining
+  rich-content/output modules.
 
 Optional modules may be disabled in `affine-wiki.config.ts`, but the starter
 must include and exercise their implementations.
@@ -75,3 +81,5 @@ consumer repository.
 - Feature fixtures demonstrate every enabled renderer.
 - No customer-specific identifier occurs in scanned public sources.
 - The publisher remains usable headlessly without the wiki package.
+- Document links use AFFiNE's native `/workspace/<id>/<docId>` export form, not
+  Obsidian `[[wikilink]]` syntax.
