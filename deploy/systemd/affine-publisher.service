@@ -1,0 +1,16 @@
+[Unit]
+Description=AFFiNE Fumadocs publisher (read-only bridge + poller)
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/affine-wiki
+EnvironmentFile=-/opt/affine-wiki/.env.publisher
+ExecStart=/usr/bin/pnpm publisher:watch
+Restart=always
+RestartSec=5
+# Keep the MCP bridge on loopback only; never publish port 3333.
+
+[Install]
+WantedBy=multi-user.target

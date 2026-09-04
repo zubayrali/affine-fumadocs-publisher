@@ -10,11 +10,12 @@
     "./bridge-client": { "types": "./packages/publisher/src/bridge-client.d.ts", "default": "./packages/publisher/src/bridge-client.mjs" },
     "./snapshot": { "types": "./packages/publisher/src/snapshot.d.ts", "default": "./packages/publisher/src/snapshot.mjs" },
     "./poller": { "types": "./packages/publisher/src/poller.d.ts", "default": "./packages/publisher/src/poller.mjs" },
-    "./service": { "types": "./packages/publisher/src/service.d.ts", "default": "./packages/publisher/src/service.mjs" }
+    "./service": { "types": "./packages/publisher/src/service.d.ts", "default": "./packages/publisher/src/service.mjs" },
+    "./deploy": { "types": "./packages/publisher/src/deploy.d.ts", "default": "./packages/publisher/src/deploy.mjs" }
   },
   "scripts": {
     "test": "pnpm neutrality:check && node --test packages/publisher/test/*.test.mjs packages/wiki/test/*.test.mjs",
-    "check": "node --check packages/publisher/src/index.mjs && node --check packages/publisher/src/bridge-client.mjs && node --check packages/publisher/src/snapshot.mjs && node --check packages/publisher/src/poller.mjs && node --check packages/publisher/src/service.mjs && pnpm --dir packages/wiki types:check",
+    "check": "node --check packages/publisher/src/index.mjs && node --check packages/publisher/src/bridge-client.mjs && node --check packages/publisher/src/snapshot.mjs && node --check packages/publisher/src/poller.mjs && node --check packages/publisher/src/service.mjs && node --check packages/publisher/src/deploy.mjs && node --check packages/publisher/deploy/github-pages.mjs && node --check packages/publisher/deploy/cloudflare-pages.mjs && pnpm --dir packages/wiki types:check",
     "template:check": "pnpm --dir templates/wiki types:check && pnpm --dir templates/wiki build",
     "neutrality:check": "node scripts/check-neutrality.mjs"
   },

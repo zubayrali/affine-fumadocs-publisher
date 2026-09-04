@@ -143,7 +143,12 @@ The template is a normal Next.js/Fumadocs application. Deploy
 private process with access to AFFiNE and persistent `.affine-publisher` state.
 Never deploy `.env.publisher` or the bridge token to the public web runtime.
 
-Docker and systemd examples are planned before the first stable release.
+For a VPS that co-hosts AFFiNE and the publisher, see
+[`docs/vps-publisher.md`](./docs/vps-publisher.md). Releases can push to
+**GitHub Pages** or **Cloudflare Pages** through `PUBLISHER_DEPLOY_TARGET`
+without changing the release loop.
+
+Docker Compose and systemd examples live under [`deploy/`](./deploy/).
 
 ## Instructions for AI coding agents
 

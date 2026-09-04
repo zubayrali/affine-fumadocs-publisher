@@ -1,0 +1,15 @@
+# Example AFFiNE adjacency stack. Pin versions for production.
+services:
+  affine:
+    image: ghcr.io/toeverything/affine-graphql:stable
+    restart: unless-stopped
+    ports:
+      - "3010:3010"
+    volumes:
+      - affine-data:/root/.affine
+    environment:
+      - AFFINE_SERVER_HOST=0.0.0.0
+      # Add database / redis services as required by your AFFiNE version.
+
+volumes:
+  affine-data:
