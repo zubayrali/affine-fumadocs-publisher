@@ -8,14 +8,22 @@ and media snapshot, never your AFFiNE credentials.
 AFFiNE workspace → read-only local bridge → publisher → Fumadocs content/docs → readers
 ```
 
-The ready-to-run fresh Fumadocs app is in [`templates/fumadocs`](./templates/fumadocs).
+The ready-to-run reference app is in
+[`templates/wiki`](./templates/wiki). It preserves the default Fumadocs visual
+language while adding the reusable behavior expected from a serious wiki.
 
-## Supported v0.1 content
+## Included wiki baseline
 
-Documents, native AFFiNE properties/tags, Markdown, internal document links, and
-AFFiNE blob-backed images are supported. Edgeless canvases, Bases/databases,
-kanban, formulas, and arbitrary embeds are not rendered yet; link to them until
-a dedicated renderer exists.
+The implemented baseline includes Fumadocs search and machine-readable routes,
+native publication controls, custom AFFiNE properties, and hierarchical tags.
+The target contract additionally covers multilingual routing, homepage controls,
+wikilinks, transclusion, backlinks, graphs, reader mode, lightboxes, slides,
+rich Markdown, AFFiNE canvases and database views, publishing diagnostics, and
+feeds. Progress and acceptance criteria live in
+[`docs/wiki-template-spec.md`](./docs/wiki-template-spec.md).
+
+Reusable behavior lives behind `@affine-fumadocs/wiki`; identity, content,
+navigation, and brand remain consumer-owned.
 
 ## Prerequisites
 
@@ -38,12 +46,12 @@ AFFiNE token, or private workspace export.
 git clone https://github.com/zubayrali/affine-fumadocs-publisher.git
 cd affine-fumadocs-publisher
 pnpm install
-cp templates/fumadocs/.env.publisher.example templates/fumadocs/.env.publisher
-# Edit templates/fumadocs/.env.publisher as described below.
+cp templates/wiki/.env.publisher.example templates/wiki/.env.publisher
+# Edit templates/wiki/.env.publisher as described below.
 
-pnpm --dir templates/fumadocs publisher:watch
+pnpm --dir templates/wiki publisher:watch
 # In a second terminal:
-pnpm --dir templates/fumadocs dev
+pnpm --dir templates/wiki dev
 ```
 
 Open `http://localhost:3000/docs`. The watcher performs an initial publish and
@@ -51,7 +59,7 @@ then checks for changes every 45 seconds by default.
 
 ## Configure `.env.publisher`
 
-Edit `templates/fumadocs/.env.publisher`:
+Edit `templates/wiki/.env.publisher`:
 
 ```dotenv
 AFFINE_WORKSPACE_ID=your-workspace-id
@@ -70,7 +78,7 @@ request-header value. Put it only in this ignored local env file. Do not use an
 official workspace MCP token as the cookie value.
 
 `publisher:watch` creates a random local token at
-`templates/fumadocs/.affine-publisher/bridge.token`, binds the bridge to
+`templates/wiki/.affine-publisher/bridge.token`, binds the bridge to
 loopback, and runs it read-only. Do not expose port `3333` to the network.
 
 ## Configure AFFiNE authoring
@@ -79,6 +87,7 @@ Create these AFFiNE workspace custom properties:
 
 | Property | Type | Required | Purpose |
 | --- | --- | --- | --- |
+| `Title` | text | no | Public page/navigation title; falls back to the AFFiNE document name |
 | `Slug` | text | yes | Public path without `/`, e.g. `guides/getting-started` |
 | `Locale` | text | yes | Usually `en` |
 | `Publish` | checkbox | yes | Must be checked |
@@ -88,8 +97,10 @@ Create these AFFiNE workspace custom properties:
 | `Order` | number | no | Navigation ordering hint |
 | `Aliases` | text | no | Comma-separated legacy URLs |
 | `Created` / `Modified` | date | no | Display metadata |
+| `Tags` | text or list | no | Comma-separated or native list values; `/` creates hierarchy |
 
-Use native AFFiNE tags for tags. A document publishes only if it has a title,
+Other JSON-safe AFFiNE properties are preserved and rendered in a collapsible
+page metadata panel. A document publishes only if it has a title,
 `Slug`, `Locale`, and checked `Publish`; checked `Draft` always prevents it.
 Missing, duplicate, or unsafe slugs fail the refresh without replacing the prior
 generated snapshot.
@@ -99,18 +110,18 @@ generated snapshot.
 1. Edit collaboratively in AFFiNE.
 2. Set `Slug`, `Locale`, and `Publish` on the document.
 3. Wait up to `PUBLISHER_POLL_SECONDS` seconds.
-4. Refresh the site. Generated files appear in `templates/fumadocs/content/docs`;
+4. Refresh the site. Generated files appear in `templates/wiki/content/docs`;
    do not hand-edit them.
-5. Run `pnpm --dir templates/fumadocs build` before deploying.
+5. Run `pnpm --dir templates/wiki build` before deploying.
 
-Use `pnpm --dir templates/fumadocs publish:affine` only for a one-off export
+Use `pnpm --dir templates/wiki publish:affine` only for a one-off export
 when a compatible local bridge and its token are already available.
 
 ## Verify and troubleshoot
 
 ```bash
-pnpm --dir templates/fumadocs types:check
-pnpm --dir templates/fumadocs build
+pnpm --dir templates/wiki types:check
+pnpm --dir templates/wiki build
 pnpm test
 ```
 
@@ -124,7 +135,7 @@ pnpm test
 ## Deploying
 
 The template is a normal Next.js/Fumadocs application. Deploy
-`templates/fumadocs` to a Node-capable host and run the publisher as a separate,
+`templates/wiki` to a Node-capable host and run the publisher as a separate,
 private process with access to AFFiNE and persistent `.affine-publisher` state.
 Never deploy `.env.publisher` or the bridge token to the public web runtime.
 

@@ -13,8 +13,10 @@
     "./service": { "types": "./packages/publisher/src/service.d.ts", "default": "./packages/publisher/src/service.mjs" }
   },
   "scripts": {
-    "test": "node --test packages/publisher/test/*.test.mjs",
-    "check": "node --check packages/publisher/src/index.mjs && node --check packages/publisher/src/bridge-client.mjs && node --check packages/publisher/src/snapshot.mjs && node --check packages/publisher/src/poller.mjs && node --check packages/publisher/src/service.mjs"
+    "test": "pnpm neutrality:check && node --test packages/publisher/test/*.test.mjs packages/wiki/test/*.test.mjs",
+    "check": "node --check packages/publisher/src/index.mjs && node --check packages/publisher/src/bridge-client.mjs && node --check packages/publisher/src/snapshot.mjs && node --check packages/publisher/src/poller.mjs && node --check packages/publisher/src/service.mjs && pnpm --dir packages/wiki types:check",
+    "template:check": "pnpm --dir templates/wiki types:check && pnpm --dir templates/wiki build",
+    "neutrality:check": "node scripts/check-neutrality.mjs"
   },
   "license": "MIT"
 }

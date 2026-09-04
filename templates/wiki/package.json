@@ -1,9 +1,9 @@
 {
-  "name": "@affine-fumadocs/template",
+  "name": "@affine-fumadocs/wiki-template",
   "version": "0.0.22",
   "private": true,
   "scripts": {
-    "build": "next build",
+    "build": "next build --webpack",
     "dev": "next dev",
     "start": "next start",
     "types:check": "next typegen && tsc --noEmit",
@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@affine-fumadocs/publisher": "workspace:*",
+    "@affine-fumadocs/wiki": "workspace:*",
     "cnfast": "^0.1.0",
     "fumadocs-core": "16.15.4",
     "fumadocs-mdx": "15.4.0",
@@ -20,7 +21,8 @@
     "lucide-react": "^1.34.0",
     "next": "16.3.3",
     "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "react-dom": "^19.2.8",
+    "zod": "^4.5.4"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",
@@ -28,9 +30,9 @@
     "@types/node": "^26.3.0",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.5",
+    "oxlint": "^1.80.0",
     "postcss": "^8.5.26",
     "tailwindcss": "^4.3.3",
-    "typescript": "^6.0.3",
-    "oxlint": "^1.80.0"
+    "typescript": "^6.0.3"
   }
 }

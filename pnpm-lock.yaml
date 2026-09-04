@@ -10,11 +10,30 @@ importers:
 
   packages/publisher: {}
 
-  templates/fumadocs:
+  packages/wiki:
+    dependencies:
+      next:
+        specifier: '>=16'
+        version: 16.3.3(@types/node@26.4.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      react:
+        specifier: '>=19'
+        version: 19.2.8
+      react-dom:
+        specifier: '>=19'
+        version: 19.2.8(react@19.2.8)
+    devDependencies:
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+
+  templates/wiki:
     dependencies:
       '@affine-fumadocs/publisher':
         specifier: workspace:*
         version: link:../../packages/publisher
+      '@affine-fumadocs/wiki':
+        specifier: workspace:*
+        version: link:../../packages/wiki
       cnfast:
         specifier: ^0.1.0
         version: 0.1.0
@@ -39,6 +58,9 @@ importers:
       react-dom:
         specifier: ^19.2.8
         version: 19.2.8(react@19.2.8)
+      zod:
+        specifier: ^4.5.4
+        version: 4.5.4
     devDependencies:
       '@tailwindcss/postcss':
         specifier: ^4.3.3

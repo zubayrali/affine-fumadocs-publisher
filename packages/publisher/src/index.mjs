@@ -1,4 +1,5 @@
 export const AFFINE_PUBLICATION_PROPERTIES = Object.freeze({
+  title: "Title",
   slug: "Slug",
   locale: "Locale",
   description: "Description",
@@ -39,7 +40,7 @@ export function metadataFromAffineProperties(properties, title) {
   const locale = text(AFFINE_PUBLICATION_PROPERTIES.locale);
   const aliases = text(AFFINE_PUBLICATION_PROPERTIES.aliases)?.split(",").map((value) => value.trim()).filter(Boolean);
   return {
-    title,
+    title: text(AFFINE_PUBLICATION_PROPERTIES.title) ?? title,
     slug,
     locale,
     description: text(AFFINE_PUBLICATION_PROPERTIES.description),
@@ -59,6 +60,91 @@ export function metadataFromAffineProperties(properties, title) {
  * importer. Publication metadata belongs in AFFiNE properties, never in the
  * reader-facing article body.
  */
+function serializablePropertyValue(value) {
+  if (
+    value === null ||
+    typeof value === "string" ||
+    typeof value === "number" ||
+    typeof value === "boolean"
+  ) {
+    return value;
+  }
+  if (value instanceof Date) return value.toISOString();
+  if (Array.isArray(value)) {
+    return value.map(serializablePropertyValue).filter((item) => item !== undefined);
+  }
+  if (value && typeof value === "object") {
+    try {
+      return JSON.parse(JSON.stringify(value));
+    } catch {
+      return undefined;
+    }
+  }
+  return undefined;
+}
+
+function tagsFromAffineProperties(properties) {
+  const value = properties?.Tags ?? properties?.tags;
+  const values = Array.isArray(value)
+    ? value
+    : typeof value === "string"
+      ? value.split(",")
+      : [];
+
+  return [...new Set(values
+    .filter((tag) => typeof tag === "string")
+    .map((tag) => tag.trim().replace(/^#+/, ""))
+    .filter(Boolean))];
+}
+
+/**
+ * Build publication metadata while preserving every JSON-safe AFFiNE property.
+ * Reserved publication controls remain top-level; authored properties are
+ * exposed under `affineProperties` so templates can render them without
+ * leaking loader internals into the public UI.
+ */
+export function metadataFromAllAffineProperties(properties, title) {
+  const source = properties && typeof properties === "object" ? properties : {};
+  const publication = metadataFromAffineProperties(source, title);
+  const reserved = new Set(Object.values(AFFINE_PUBLICATION_PROPERTIES));
+  const affineProperties = Object.fromEntries(
+    Object.entries(source).flatMap(([name, value]) => {
+      const normalizedName = name.trim();
+      if (!normalizedName || reserved.has(normalizedName)) return [];
+      const serialized = serializablePropertyValue(value);
+      return serialized === undefined ? [] : [[normalizedName, serialized]];
+    }),
+  );
+  const tags = tagsFromAffineProperties(source);
+
+  return Object.fromEntries(
+    Object.entries({
+      ...publication,
+      tags: tags.length > 0 ? tags : undefined,
+      affineProperties,
+    }).filter(([, value]) => value !== undefined),
+  );
+}
+
+const AFFINE_DOCUMENT_LINK = /\[([^\]]*)\]\(\/?workspace\/[^/)]+\/([A-Za-z0-9_-]+)(?::[^)]*)?\)/g;
+
+export function findLinkedDocumentIds(markdown) {
+  const ids = new Set();
+  for (const match of String(markdown).matchAll(AFFINE_DOCUMENT_LINK)) {
+    if (match[2]) ids.add(match[2]);
+  }
+  return [...ids];
+}
+
+export function rewriteAffineDocumentLinks(markdown, pagesById, basePath = "/docs") {
+  const prefix = basePath === "/" ? "" : `/${basePath.replace(/^\/+|\/+$/g, "")}`;
+  return String(markdown).replace(AFFINE_DOCUMENT_LINK, (original, label, linkedId) => {
+    const page = pagesById.get(linkedId);
+    if (!page) return original;
+    return `[${label || page.title}](${prefix}/${page.slug.replace(/^\/+/, "")})`;
+  });
+}
+
 export function stripLegacyFrontmatter(markdown) {
   const source = typeof markdown === "string" ? markdown.replace(/^\uFEFF/, "") : "";
   const plainFrontmatter = /^---[ \t]*\r?\n[\s\S]*?\r?\n---[ \t]*(?:\r?\n|$)/;

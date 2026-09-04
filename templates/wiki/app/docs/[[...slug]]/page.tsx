@@ -12,6 +12,9 @@ import { getMDXComponents } from '@/components/mdx';
 import type { Metadata } from 'next';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
 import { gitConfig } from '@/lib/shared';
+import { PageMetadata } from '@/components/wiki-metadata';
+import wikiConfig from '@/affine-wiki.config';
+import { Backlinks } from '@/components/backlinks';
 
 export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
   const params = await props.params;
@@ -23,9 +26,14 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
 
   return (
     <DocsPage toc={page.data.toc} full={page.data.full}>
-      <DocsTitle>{page.data.title}</DocsTitle>
-      <DocsDescription className="mb-0">{page.data.description}</DocsDescription>
-      <div className="flex flex-row gap-2 items-center border-b pb-6">
+	      <DocsTitle>{page.data.title}</DocsTitle>
+	      <DocsDescription className="mb-0">{page.data.description}</DocsDescription>
+	      <PageMetadata
+	        data={page.data as unknown as Record<string, unknown>}
+	        showProperties={wikiConfig.features.properties}
+	        showTags={wikiConfig.features.tags}
+	      />
+	      <div className="flex flex-row gap-2 items-center border-b pb-6">
         <MarkdownCopyButton markdownUrl={markdownUrl} />
         <ViewOptionsPopover
           markdownUrl={markdownUrl}
@@ -33,13 +41,22 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
         />
       </div>
       <DocsBody>
-        <MDX
+	        <MDX
           components={getMDXComponents({
             // this allows you to link to other pages with relative file paths
             a: createRelativeLink(source, page),
           })}
-        />
-      </DocsBody>
+	        />
+	        {wikiConfig.features.backlinks ? (
+	          <Backlinks
+	            currentUrl={page.url}
+	            pages={source.getPages().map((candidate) => ({
+	              url: candidate.url,
+	              data: candidate.data as unknown as Record<string, unknown> & { title?: string; description?: string },
+	            }))}
+	          />
+	        ) : null}
+	      </DocsBody>
     </DocsPage>
   );
 }

@@ -1,8 +1,9 @@
-# AFFiNE Fumadocs template
+# AFFiNE Knowledge Base template
 
-This is a fresh [Create Fumadocs](https://github.com/fuma-nama/fumadocs) Next.js
-template with the AFFiNE publisher wired in. AFFiNE is the collaborative source
-of truth; this app serves a generated local Fumadocs snapshot.
+This is the neutral reference application for `@affine-fumadocs/publisher` and
+`@affine-fumadocs/wiki`. It retains default Fumadocs styling while providing a
+feature-complete collaborative wiki baseline. AFFiNE is the private source of
+truth; readers receive only generated snapshots.
 
 ## Quick start
 
@@ -10,10 +11,10 @@ From the repository root:
 
 ```bash
 pnpm install
-cp templates/fumadocs/.env.publisher.example templates/fumadocs/.env.publisher
+cp templates/wiki/.env.publisher.example templates/wiki/.env.publisher
 # Set AFFINE_WORKSPACE_ID and AFFINE_BLOB_COOKIE.
-pnpm --dir templates/fumadocs publisher:watch
-pnpm --dir templates/fumadocs dev
+pnpm --dir templates/wiki publisher:watch
+pnpm --dir templates/wiki dev
 ```
 
 Install [`affine-mcp-server`](https://github.com/DAWNCR0W/affine-mcp-server)
@@ -32,7 +33,13 @@ Set these native AFFiNE custom properties:
 - Optional: `Description`, `Draft`, `Unlisted`, `Featured`, `Order`, `Aliases`,
   `Created`, `Modified`
 
-`Draft` prevents publication. Tags remain native AFFiNE tags.
+`Draft` prevents publication. Add a `Tags` property as a comma-separated value
+or list. Tags become browsable routes under `/docs/tags`; hierarchical values
+such as `guides/setup` also appear under their `guides` parent.
+
+Every other JSON-safe AFFiNE property is preserved in the generated frontmatter
+under `affineProperties` and rendered in the page's collapsible Properties panel.
+Publication controls stay separate and are never repeated in that panel.
 
 ## Fumadocs application
 

@@ -31,9 +31,21 @@ export interface AffinePublicationMetadata {
   modified?: string;
 }
 
-export const AFFINE_PUBLICATION_PROPERTIES: Readonly<Record<keyof Omit<AffinePublicationMetadata, "title">, string>>;
+export interface AffinePublishedDocumentMetadata extends AffinePublicationMetadata {
+  tags?: string[];
+  affineProperties: Record<string, unknown>;
+}
+
+export const AFFINE_PUBLICATION_PROPERTIES: Readonly<Record<keyof AffinePublicationMetadata, string>>;
 export function definePublisherConfig(input: PublisherConfigInput): PublisherConfig;
 export function metadataFromAffineProperties(properties: Record<string, unknown> | undefined, title: string | undefined): AffinePublicationMetadata;
+export function metadataFromAllAffineProperties(properties: Record<string, unknown> | undefined, title: string | undefined): AffinePublishedDocumentMetadata;
+export function findLinkedDocumentIds(markdown: string): string[];
+export function rewriteAffineDocumentLinks(
+  markdown: string,
+  pagesById: ReadonlyMap<string, { title: string; slug: string }>,
+  basePath?: string,
+): string;
 export function stripLegacyFrontmatter(markdown: string): string;
 export function normalizeMarkdownFences(markdown: string): string;
 export function validatePublication(metadata: AffinePublicationMetadata): string[];
