@@ -1,16 +1,35 @@
 [Unit]
 Description=AFFiNE Fumadocs publisher (read-only bridge + poller)
+Documentation=https://github.com/zubayrali/affine-fumadocs-publisher/blob/main/docs/vps-publisher.md
 After=network-online.target docker.service
 Wants=network-online.target
+# Start after AFFiNE if you manage it with this unit name:
+# After=docker.service affine.service
 
 [Service]
 Type=simple
-WorkingDirectory=/opt/affine-wiki
-EnvironmentFile=-/opt/affine-wiki/.env.publisher
-ExecStart=/usr/bin/pnpm publisher:watch
+User=__PUBLISHER_USER__
+Group=__PUBLISHER_GROUP__
+WorkingDirectory=__PUBLISHER_ROOT__
+Environment=NODE_ENV=production
+Environment=PATH=__PUBLISHER_PATH__
+EnvironmentFile=-__PUBLISHER_ROOT__/.env.publisher
+ExecStart=__PUBLISHER_NODE__ --env-file=.env.publisher scripts/affine-publisher-service.ts
 Restart=always
 RestartSec=5
-# Keep the MCP bridge on loopback only; never publish port 3333.
+TimeoutStartSec=120
+# Persist logs under the repo; journald also captures stdout/stderr.
+StandardOutput=append:__PUBLISHER_ROOT__/.affine-publisher/logs/publisher.log
+StandardError=append:__PUBLISHER_ROOT__/.affine-publisher/logs/publisher-error.log
+
+# Hardening: the bridge must stay on loopback (127.0.0.1:3333).
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=__PUBLISHER_ROOT__
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+RestrictSUIDSGID=true
 
 [Install]
 WantedBy=multi-user.target
