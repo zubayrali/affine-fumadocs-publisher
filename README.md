@@ -148,7 +148,13 @@ For a VPS that co-hosts AFFiNE and the publisher, see
 **GitHub Pages** or **Cloudflare Pages** through `PUBLISHER_DEPLOY_TARGET`
 without changing the release loop.
 
-Docker Compose and systemd examples live under [`deploy/`](./deploy/).
+Install the publisher unit from a consumer app root:
+
+```bash
+bash node_modules/@affine-fumadocs/publisher/deploy/install-systemd.sh
+```
+
+Docker Compose and systemd unit templates live under [`deploy/`](./deploy/).
 
 ## Instructions for AI coding agents
 
