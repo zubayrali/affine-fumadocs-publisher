@@ -96,6 +96,10 @@ function parseNode(value: unknown): CanvasNode | null {
         ...base,
         type: 'text',
         text: value.text,
+        html: typeof value.html === 'string' ? value.html : undefined,
+        databaseSnapshot: isRecord(value.databaseSnapshot)
+          ? (value.databaseSnapshot as AffineDatabaseSnapshot)
+          : undefined,
         content: content(value.content),
         variant: value.variant === 'label' ? 'label' : undefined,
         fontSize: typeof value.fontSize === 'number' ? value.fontSize : undefined,

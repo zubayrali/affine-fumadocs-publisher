@@ -13,7 +13,8 @@
     "./deploy": { "types": "./src/deploy.d.ts", "default": "./src/deploy.mjs" },
     "./incremental-build": { "types": "./src/incremental-build.d.ts", "default": "./src/incremental-build.mjs" },
     "./incremental-generate": { "types": "./src/incremental-generate.d.ts", "default": "./src/incremental-generate.mjs" },
-    "./releases": { "types": "./src/releases.d.ts", "default": "./src/releases.mjs" }
+    "./releases": { "types": "./src/releases.d.ts", "default": "./src/releases.mjs" },
+    "./databases": { "types": "./src/databases.d.ts", "default": "./src/databases.mjs" }
   },
   "license": "MIT"
 }

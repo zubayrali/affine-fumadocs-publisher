@@ -54,19 +54,25 @@ template and downstream sites.
   multilingual helpers + props-driven `LocaleSwitcher`
   (`@affine-fumadocs/wiki/site`), a neutral Publishing Studio shell
   (`@affine-fumadocs/wiki/studio`) with a fixture-backed `/publishing` admin
-  route (dev-only; excluded from production reader builds), and AFFiNE edgeless
-  canvas pan/zoom maps (`@affine-fumadocs/wiki/canvas` — labeled-box viewer;
-  markdown-in-node MDX previews and embedded database cells deferred).
+  route (dev-only; excluded from production reader builds), optional
+  `statusUrl` one-shot fetch plus `/api/publishing/status` fixture endpoint,
+  RSS (`app/rss.xml`, gated by `features.rss`) and sitemap (`app/sitemap.ts`)
+  using `wikiConfig.site`, Open Graph + Markdown/LLM endpoints, and AFFiNE
+  edgeless canvas pan/zoom maps (`@affine-fumadocs/wiki/canvas` — labeled boxes
+  plus optional in-node HTML and embedded database snapshots; full MDX compile
+  of markdown nodes remains deferred).
 - Complete in this slice: site-control helpers (`isSiteControlPage`), optional
   `buildHomeModel` stub, studio config validators (plain `.mjs`, no Zod), and
   feature-gated template wiring for `features.multilingual` /
-  `features.publishingStudio` / rich-content flags.
+  `features.publishingStudio` / `features.rss` / rich-content flags. Publisher
+  headless DB marker helpers live in `@affine-fumadocs/publisher` (`databases`
+  export + main package re-exports) and are applied during
+  `publish-from-affine.mjs` after blob materialization.
 - Hard-deferred: body-level note transclusion. AFFiNE's Markdown export
   flattens embed-linked documents into ordinary workspace links, so embedded
-  bodies are not recoverable from the current bridge export. Live publisher
-  status polling, AFFiNE homepage table compilation, canvas markdown-node MDX
-  previews, in-node database embeds, and remaining output polish
-  (RSS/sitemap/OG) remain later.
+  bodies are not recoverable from the current bridge export. Live continuous
+  publisher status polling, AFFiNE homepage table compilation, and full MDX
+  compile of canvas markdown nodes remain later.
 
 Optional modules may be disabled in `affine-wiki.config.ts`, but the starter
 must include and exercise their implementations.

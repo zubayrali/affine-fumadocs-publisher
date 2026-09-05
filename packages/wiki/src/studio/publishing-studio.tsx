@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   AlertTriangle,
   ArrowUpRight,
@@ -12,6 +12,7 @@ import {
   FilePenLine,
   Search,
 } from 'lucide-react';
+import { isStudioSnapshot } from './config.mjs';
 import type {
   StudioDiagnostic,
   StudioDocumentStatus,
@@ -51,21 +52,63 @@ const statusLabels: Record<StudioDocumentStatus, string> = {
 
 export interface PublishingStudioProps {
   snapshot?: StudioSnapshot;
+  /**
+   * Optional status endpoint. When set, the studio fetches once on mount and
+   * prefers a valid response over the static `snapshot` prop.
+   */
+  statusUrl?: string;
   /** Optional label shown in the empty state. */
   emptyHref?: string;
 }
 
 /**
- * Neutral Publishing Studio shell. The template (or consumer) supplies the
- * snapshot — this component does not fetch live publisher status.
+ * Neutral Publishing Studio shell. Supply a snapshot prop and/or a one-shot
+ * `statusUrl` fetch — the component never talks to AFFiNE directly.
  */
 export function PublishingStudio({
-  snapshot,
+  snapshot: initialSnapshot,
+  statusUrl,
   emptyHref = '/',
 }: PublishingStudioProps) {
+  const [snapshot, setSnapshot] = useState(initialSnapshot);
+  const [statusLoading, setStatusLoading] = useState(Boolean(statusUrl));
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState<'all' | StudioDocumentStatus>('all');
   const [collectionFilter, setCollectionFilter] = useState('all');
+
+  useEffect(() => {
+    setSnapshot(initialSnapshot);
+  }, [initialSnapshot]);
+
+  useEffect(() => {
+    if (!statusUrl) {
+      setStatusLoading(false);
+      return;
+    }
+
+    let cancelled = false;
+    setStatusLoading(true);
+
+    void fetch(statusUrl)
+      .then(async (response) => {
+        if (!response.ok) throw new Error(`Status ${response.status}`);
+        return response.json();
+      })
+      .then((data: unknown) => {
+        if (cancelled) return;
+        if (isStudioSnapshot(data)) setSnapshot(data);
+      })
+      .catch(() => {
+        // Keep the static snapshot (if any); the empty state covers a total miss.
+      })
+      .finally(() => {
+        if (!cancelled) setStatusLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [statusUrl]);
 
   const documents = useMemo(() => (snapshot?.documents ?? []).filter((document) => {
     const matchesFilter = filter === 'all' || document.status === filter;
@@ -83,8 +126,12 @@ export function PublishingStudio({
     return (
       <main className="wiki-studio-shell wiki-studio-empty">
         <p className="wiki-studio-context">Publishing Studio</p>
-        <h1>No publisher snapshot yet</h1>
-        <p>Provide a studio snapshot from your publisher pipeline to inspect publication health here.</p>
+        <h1>{statusLoading ? 'Loading publisher status…' : 'No publisher snapshot yet'}</h1>
+        <p>
+          {statusLoading
+            ? 'Fetching the latest studio snapshot.'
+            : 'Provide a studio snapshot from your publisher pipeline to inspect publication health here.'}
+        </p>
         <Link href={emptyHref}>Return to the site</Link>
       </main>
     );

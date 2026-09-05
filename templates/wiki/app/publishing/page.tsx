@@ -13,5 +13,10 @@ export default function PublishingPage() {
     ? (fixture as StudioSnapshot)
     : undefined;
 
-  return <PublishingStudio snapshot={snapshot} />;
+  return (
+    <PublishingStudio
+      snapshot={snapshot}
+      statusUrl="/api/publishing/status"
+    />
+  );
 }

@@ -183,6 +183,41 @@ test('round-trips native shape fields through the public canvas parser', () => {
   });
 });
 
+test('round-trips optional html and databaseSnapshot on text nodes', () => {
+  const snapshot = {
+    databaseBlockId: 'db-1',
+    title: 'Embedded',
+    columns: [{ id: 'title', name: 'Title', type: 'title' }],
+    views: [{ id: 'table', name: 'Table', mode: 'table' }],
+    rows: [{ rowBlockId: 'r1', title: 'Row', cells: {} }],
+  };
+  const parsed = parseCanvasData(
+    JSON.stringify({
+      nodes: [
+        {
+          id: 'rich',
+          type: 'text',
+          text: 'Fallback label',
+          html: '<p>Rich <strong>body</strong></p>',
+          databaseSnapshot: snapshot,
+          x: 0,
+          y: 0,
+          width: 280,
+          height: 200,
+        },
+      ],
+      edges: [],
+    }),
+  );
+  assert.partialDeepStrictEqual(parsed.nodes[0], {
+    id: 'rich',
+    type: 'text',
+    text: 'Fallback label',
+    html: '<p>Rich <strong>body</strong></p>',
+    databaseSnapshot: snapshot,
+  });
+});
+
 test('publishes rich AFFiNE blocks and strips publication YAML', () => {
   const canvas = affineCanvasToCanvasData({
     edgelessBlocks: [

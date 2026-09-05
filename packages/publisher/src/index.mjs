@@ -210,3 +210,9 @@ export function validatePublication(metadata) {
   if (metadata?.draft === true) errors.push("Draft documents cannot be published.");
   return errors;
 }
+
+export {
+  findAffineDatabaseBlockIds,
+  replaceAffineDatabaseMarkers,
+  resolveAffineDatabaseSources,
+} from "./databases.mjs";

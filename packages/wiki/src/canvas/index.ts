@@ -35,4 +35,8 @@ export { parseCanvasData } from './load-canvas.js';
 export { nodeLabel } from './labels.js';
 export { canvasToFlow, type CanvasBoxNodeData } from './to-flow.js';
 export { CanvasPage } from './page.js';
+export {
+  CanvasTextContent,
+  type CanvasTextContentProps,
+} from './text-content.js';
 export { CanvasView, type CanvasViewProps } from './view.js';

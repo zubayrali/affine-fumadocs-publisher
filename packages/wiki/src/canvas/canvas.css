@@ -68,6 +68,34 @@
   -webkit-box-orient: vertical;
 }
 
+.wiki-canvas-text-content {
+  min-height: 0;
+  flex: 1;
+  color: inherit;
+}
+
+.wiki-canvas-text-content h1,
+.wiki-canvas-text-content h2,
+.wiki-canvas-text-content h3,
+.wiki-canvas-text-content h4 {
+  margin: 0 0 0.35rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.wiki-canvas-text-content p {
+  margin: 0 0 0.4rem;
+}
+
+.wiki-canvas-text-content p:last-child {
+  margin-bottom: 0;
+}
+
+.wiki-canvas-text-content .affine-db {
+  margin-top: 0.5rem;
+}
+
 .wiki-canvas-handle {
   opacity: 0;
   pointer-events: none;

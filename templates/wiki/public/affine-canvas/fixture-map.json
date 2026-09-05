@@ -13,6 +13,7 @@
       "id": "note",
       "type": "text",
       "text": "## Start here\n\nPublish an AFFiNE edgeless canvas as a pan/zoom map.",
+      "html": "<h2>Start here</h2><p>Publish an AFFiNE edgeless canvas as a pan/zoom map.</p>",
       "x": 40,
       "y": 60,
       "width": 260,

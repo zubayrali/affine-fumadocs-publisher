@@ -26,6 +26,10 @@ export type CanvasNodeBase = {
 export type CanvasTextNode = CanvasNodeBase & {
   type: 'text';
   text: string;
+  /** Pre-rendered HTML for richer in-node display (full MDX compile still deferred). */
+  html?: string;
+  /** Optional embedded database snapshot rendered inside the note card. */
+  databaseSnapshot?: AffineDatabaseSnapshot;
   content?: CanvasContentSegment[];
   variant?: 'card' | 'label';
   fontSize?: number;

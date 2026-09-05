@@ -14,6 +14,7 @@ import {
   type NodeProps,
 } from '@xyflow/react';
 import { canvasNodeStyle, resolveCanvasColor, resolveCanvasInkColor } from './colors.js';
+import { CanvasTextContent } from './text-content.js';
 import { canvasToFlow, type CanvasBoxNodeData } from './to-flow.js';
 import type { CanvasData, CanvasNode } from './types.js';
 import '@xyflow/react/dist/style.css';
@@ -77,6 +78,8 @@ function boxStyle(node: CanvasNode): CSSProperties {
 function CanvasBoxNode({ data }: NodeProps<Node<CanvasBoxNodeData>>) {
   const { node, label } = data;
   const isGroup = node.type === 'group';
+  const richText =
+    node.type === 'text' && (Boolean(node.html) || Boolean(node.databaseSnapshot));
   return (
     <div
       className={isGroup ? 'wiki-canvas-box wiki-canvas-box--group' : 'wiki-canvas-box'}
@@ -89,7 +92,11 @@ function CanvasBoxNode({ data }: NodeProps<Node<CanvasBoxNodeData>>) {
         </>
       ) : null}
       <span className="wiki-canvas-box__kind">{node.type}</span>
-      <strong className="wiki-canvas-box__label">{label}</strong>
+      {richText && node.type === 'text' ? (
+        <CanvasTextContent html={node.html} databaseSnapshot={node.databaseSnapshot} />
+      ) : (
+        <strong className="wiki-canvas-box__label">{label}</strong>
+      )}
     </div>
   );
 }

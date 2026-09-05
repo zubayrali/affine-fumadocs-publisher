@@ -53,3 +53,8 @@ export function rewriteAffineDocumentLinks(
 export function stripLegacyFrontmatter(markdown: string): string;
 export function normalizeMarkdownFences(markdown: string): string;
 export function validatePublication(metadata: AffinePublicationMetadata): string[];
+export {
+  findAffineDatabaseBlockIds,
+  replaceAffineDatabaseMarkers,
+  resolveAffineDatabaseSources,
+} from './databases.js';

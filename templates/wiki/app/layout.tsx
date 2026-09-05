@@ -17,6 +17,16 @@ export const metadata: Metadata = {
 export default function Layout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="en" className={inter.className} suppressHydrationWarning>
+      <head>
+        {wikiConfig.features.rss ? (
+          <link
+            rel="alternate"
+            type="application/rss+xml"
+            title={`${wikiConfig.site.name} RSS`}
+            href="/rss.xml"
+          />
+        ) : null}
+      </head>
       <body className="flex flex-col min-h-screen">
         <RootProvider>{children}</RootProvider>
       </body>

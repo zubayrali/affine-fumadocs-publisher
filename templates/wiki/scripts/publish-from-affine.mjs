@@ -4,8 +4,11 @@ import { createAffineBridgeMcpClient } from '@affine-fumadocs/publisher/bridge-c
 import {
   findLinkedDocumentIds,
   findUnpublishedLinkedDocumentIds,
+  findAffineDatabaseBlockIds,
   metadataFromAllAffineProperties,
   normalizeMarkdownFences,
+  replaceAffineDatabaseMarkers,
+  resolveAffineDatabaseSources,
   rewriteAffineDocumentLinks,
   stripLegacyFrontmatter,
   validatePublication,
@@ -77,13 +80,33 @@ if (publishErrors.length) throw new Error(`Cannot publish ${publishErrors.length
         });
       }
       const rewritten = rewriteAffineDocumentLinks(stripLegacyFrontmatter(raw), pagesById);
-      const markdown = await materializeAffineBlobAssets({
-        markdown: mdxSafe(normalizeMarkdownFences(rewritten)), workspaceId, publicRoot, assets, cookie: process.env.AFFINE_BLOB_COOKIE?.trim(),
-      blobBaseUrl: process.env.AFFINE_BLOB_BASE_URL,
-      onUnavailable: (_key, message) => { throw new Error(message); },
-    });
-    const destination = path.join(temporary, `${page.slug}.mdx`);
-    await fs.mkdir(path.dirname(destination), { recursive: true });
+      // Keep HTML database markers intact through materialize; mdxSafe converts
+      // `<!-- -->` to JSX comments and would hide them from the marker regex.
+      const withBlobs = await materializeAffineBlobAssets({
+        markdown: normalizeMarkdownFences(rewritten),
+        workspaceId,
+        publicRoot,
+        assets,
+        cookie: process.env.AFFINE_BLOB_COOKIE?.trim(),
+        blobBaseUrl: process.env.AFFINE_BLOB_BASE_URL,
+        onUnavailable: (_key, message) => { throw new Error(message); },
+      });
+      const databaseIds = findAffineDatabaseBlockIds(withBlobs);
+      const databaseSources = await resolveAffineDatabaseSources(
+        publicRoot,
+        page.doc.id,
+        databaseIds,
+      );
+      const withDatabases = replaceAffineDatabaseMarkers(withBlobs, databaseSources);
+      // Protect the injected MDX import from brace escaping in mdxSafe.
+      const importPrefix = withDatabases.match(
+        /^import \{ AffineDatabase \} from "[^"]+";\n\n/,
+      );
+      const markdown = importPrefix
+        ? `${importPrefix[0]}${mdxSafe(withDatabases.slice(importPrefix[0].length))}`
+        : mdxSafe(withDatabases);
+      const destination = path.join(temporary, `${page.slug}.mdx`);
+      await fs.mkdir(path.dirname(destination), { recursive: true });
       const outgoingLinks = linkedDocumentIds.flatMap((id) => {
         const linked = pagesById.get(id);
         return linked ? [`/docs/${linked.slug}`] : [];
