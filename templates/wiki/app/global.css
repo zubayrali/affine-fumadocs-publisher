@@ -7,6 +7,7 @@
 @import '@affine-fumadocs/wiki/databases/css';
 @import '@affine-fumadocs/wiki/lightbox/css';
 @import '@affine-fumadocs/wiki/slides/slides.css';
+@import '@affine-fumadocs/wiki/canvas/css';
 
 html {
   scrollbar-gutter: stable;

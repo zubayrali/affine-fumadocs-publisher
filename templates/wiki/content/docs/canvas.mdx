@@ -1,0 +1,17 @@
+---
+title: Canvas map
+description: Fixture page for the AFFiNE edgeless canvas viewer.
+full: true
+outgoingLinks: ["/docs", "/docs/features"]
+tags: [wiki]
+---
+
+import { CanvasPage } from "@affine-fumadocs/wiki/canvas";
+
+# Canvas map
+
+This fixture loads a published `CanvasData` JSON snapshot and renders it with
+React Flow pan/zoom. Enable or disable the module with `features.canvas` in
+`affine-wiki.config.ts`.
+
+<CanvasPage src="/affine-canvas/fixture-map.json" title="Topic map" />

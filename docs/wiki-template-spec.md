@@ -47,18 +47,25 @@ template and downstream sites.
   generated backlinks, orphan-page detection, hover link previews, article
   lightbox galleries (`@affine-fumadocs/wiki/lightbox`), AFFiNE database
   table / gallery / kanban views (`@affine-fumadocs/wiki/databases`), global and
-  local knowledge graphs (`@affine-fumadocs/wiki/graph`), and thin reader mode
-  (`@affine-fumadocs/wiki/reader`).
-- Complete in this slice: Mermaid diagrams (`beautiful-mermaid` +
-  `remarkMdxMermaid`), KaTeX math (`remark-math` / `rehype-katex`), and
-  `slides: true` → `/docs/.../slides` via `SlideViewer`, all feature-gated
-  through `WikiConfig.features` and `createWikiMdxOptions`.
+  local knowledge graphs (`@affine-fumadocs/wiki/graph`), thin reader mode
+  (`@affine-fumadocs/wiki/reader`), Mermaid / KaTeX / slides via
+  `createWikiMdxOptions`, multilingual helpers + props-driven `LocaleSwitcher`
+  (`@affine-fumadocs/wiki/site`), a neutral Publishing Studio shell
+  (`@affine-fumadocs/wiki/studio`) with a fixture-backed `/publishing` admin
+  route (dev-only; excluded from production reader builds), and AFFiNE edgeless
+  canvas pan/zoom maps (`@affine-fumadocs/wiki/canvas` — labeled-box viewer;
+  markdown-in-node MDX previews and embedded database cells deferred).
+- Complete in this slice: site-control helpers (`isSiteControlPage`), optional
+  `buildHomeModel` stub, studio config validators (plain `.mjs`, no Zod), and
+  feature-gated template wiring for `features.multilingual` /
+  `features.publishingStudio`.
 - Deferred in this slice: body-level note transclusion. AFFiNE's Markdown export
   flattens embed-linked documents into ordinary workspace links, so embedded
-  bodies are not recoverable from the current bridge export.
-- Next slices: canvas, multilingual/homepage controls,
-  citations/sidenotes/annotations/orbit, then Publishing Studio and remaining
-  output modules.
+  bodies are not recoverable from the current bridge export. Live publisher
+  status polling, AFFiNE homepage table compilation, canvas markdown-node MDX
+  previews, and in-node database embeds remain later.
+- Next slices: citations/sidenotes/annotations/orbit, then remaining
+  output modules (RSS/sitemap/OG polish as needed).
 
 Optional modules may be disabled in `affine-wiki.config.ts`, but the starter
 must include and exercise their implementations.

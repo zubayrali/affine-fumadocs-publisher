@@ -1,0 +1,85 @@
+{
+  "nodes": [
+    {
+      "id": "frame",
+      "type": "group",
+      "label": "Topic map",
+      "x": 0,
+      "y": 0,
+      "width": 720,
+      "height": 420
+    },
+    {
+      "id": "note",
+      "type": "text",
+      "text": "## Start here\n\nPublish an AFFiNE edgeless canvas as a pan/zoom map.",
+      "x": 40,
+      "y": 60,
+      "width": 260,
+      "height": 160,
+      "color": "#fef3c7"
+    },
+    {
+      "id": "shape",
+      "type": "shape",
+      "shape": "diamond",
+      "text": "Intention",
+      "x": 400,
+      "y": 80,
+      "width": 180,
+      "height": 100,
+      "fillColor": "#fcd34d",
+      "strokeColor": "#a16207",
+      "textColor": "#111827"
+    },
+    {
+      "id": "label",
+      "type": "text",
+      "variant": "label",
+      "text": "Begin here",
+      "x": 400,
+      "y": 240,
+      "width": 160,
+      "height": 40,
+      "color": "#111827",
+      "textAlign": "center"
+    },
+    {
+      "id": "next",
+      "type": "shape",
+      "shape": "rect",
+      "text": "Next step",
+      "x": 400,
+      "y": 300,
+      "width": 180,
+      "height": 64,
+      "fillColor": "#e0f2fe",
+      "strokeColor": "#0284c7",
+      "radius": 8
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-1",
+      "fromNode": "note",
+      "toNode": "shape",
+      "fromSide": "right",
+      "toSide": "left",
+      "mode": "orthogonal",
+      "strokeStyle": "dash",
+      "strokeWidth": 3,
+      "fromEnd": "none",
+      "toEnd": "arrow",
+      "color": "#929292",
+      "label": "leads to"
+    },
+    {
+      "id": "edge-2",
+      "fromNode": "shape",
+      "toNode": "next",
+      "mode": "straight",
+      "toEnd": "arrow",
+      "color": "#64748b"
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 import defaultMdxComponents from 'fumadocs-ui/mdx';
 import type { MDXComponents } from 'mdx/types';
+import { CanvasPage } from '@affine-fumadocs/wiki/canvas';
 import { AffineDatabase } from '@affine-fumadocs/wiki/databases';
 import { ArticleImage } from '@affine-fumadocs/wiki/lightbox';
 import { Mermaid } from '@affine-fumadocs/wiki/mdx/mermaid';
@@ -10,6 +11,7 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     ...defaultMdxComponents,
     ...(wikiConfig.features.lightbox ? { img: ArticleImage } : {}),
     ...(wikiConfig.features.databases ? { AffineDatabase } : {}),
+    ...(wikiConfig.features.canvas ? { CanvasPage } : {}),
     ...(wikiConfig.features.mermaid ? { Mermaid } : {}),
     ...components,
   } as MDXComponents;

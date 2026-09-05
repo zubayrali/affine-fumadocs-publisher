@@ -1,0 +1,133 @@
+/*
+ * Neutral canvas viewer chrome for @xyflow/react.
+ * Uses Fumadocs semantic tokens only — no brand-specific palette.
+ */
+
+.react-flow__panel {
+  position: absolute !important;
+  z-index: 5;
+}
+
+.react-flow__panel.bottom {
+  bottom: 0;
+}
+
+.react-flow__panel.top {
+  top: 0;
+}
+
+.react-flow__panel.left {
+  left: 0;
+}
+
+.react-flow__panel.right {
+  right: 0;
+}
+
+.wiki-canvas-flow .react-flow__node {
+  padding: 0;
+  border: none;
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.wiki-canvas-box {
+  box-sizing: border-box;
+  display: flex;
+  height: 100%;
+  width: 100%;
+  flex-direction: column;
+  gap: 0.35rem;
+  overflow: hidden;
+  padding: 0.65rem 0.75rem;
+}
+
+.wiki-canvas-box--group {
+  pointer-events: none;
+}
+
+.wiki-canvas-box__kind {
+  color: var(--color-fd-muted-foreground);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.wiki-canvas-box__label {
+  overflow: hidden;
+  color: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: pre-wrap;
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+}
+
+.wiki-canvas-handle {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.wiki-canvas-controls {
+  margin: 12px !important;
+  overflow: hidden;
+  border: 1px solid color-mix(in oklab, var(--color-fd-border) 78%, transparent);
+  background: color-mix(in oklab, var(--color-fd-background) 88%, transparent) !important;
+  box-shadow: 0 8px 24px color-mix(in oklab, #000 12%, transparent) !important;
+  backdrop-filter: blur(12px);
+}
+
+.wiki-canvas-identity {
+  display: grid;
+  gap: 0.08rem;
+  max-width: min(22rem, calc(100vw - 15rem));
+  padding: 0.48rem 0.68rem;
+  border-left: 2px solid var(--color-fd-primary);
+  background: color-mix(in oklab, var(--color-fd-background) 88%, transparent);
+  color: var(--color-fd-foreground);
+  backdrop-filter: blur(12px);
+}
+
+.wiki-canvas-identity span {
+  color: var(--color-fd-muted-foreground);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.wiki-canvas-identity strong {
+  overflow: hidden;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wiki-canvas-hint {
+  border: 1px solid color-mix(in oklab, var(--color-fd-border) 72%, transparent);
+  background: color-mix(in oklab, var(--color-fd-background) 86%, transparent);
+  padding: 0.4rem 0.65rem;
+  color: var(--color-fd-muted-foreground);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  backdrop-filter: blur(12px);
+}
+
+.wiki-canvas-error {
+  color: var(--color-fd-muted-foreground);
+  font-size: 0.875rem;
+}
+
+@media (max-width: 640px) {
+  .wiki-canvas-hint {
+    display: none;
+  }
+}

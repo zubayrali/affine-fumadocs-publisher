@@ -14,6 +14,7 @@
   "dependencies": {
     "@affine-fumadocs/publisher": "workspace:*",
     "@affine-fumadocs/wiki": "workspace:*",
+    "@xyflow/react": "^12.11.0",
     "beautiful-mermaid": "^1.1.3",
     "cnfast": "^0.1.0",
     "d3-force": "^3.0.0",

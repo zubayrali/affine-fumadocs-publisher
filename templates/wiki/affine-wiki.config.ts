@@ -7,5 +7,6 @@ export default defineWikiConfig({
   },
   locales: [
     { code: 'en', label: 'English', languageTag: 'en', dir: 'ltr' },
+    { code: 'fr', label: 'Français', languageTag: 'fr', dir: 'ltr' },
   ],
 });

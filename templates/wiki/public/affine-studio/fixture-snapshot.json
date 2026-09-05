@@ -1,0 +1,89 @@
+{
+  "version": 1,
+  "generatedAt": "2026-09-05T00:00:00.000Z",
+  "locale": "en",
+  "summary": {
+    "workspaceDocuments": 3,
+    "publishedPages": 2,
+    "drafts": 1,
+    "errors": 0,
+    "warnings": 1
+  },
+  "collections": [
+    {
+      "id": "en",
+      "name": "Language · English",
+      "documentCount": 3
+    }
+  ],
+  "portals": [
+    {
+      "id": "guides",
+      "label": "Guides",
+      "route": "docs",
+      "collection": "Language · English",
+      "publishedCount": 2,
+      "workspaceCount": 3
+    }
+  ],
+  "documents": [
+    {
+      "id": "doc-features",
+      "title": "Features",
+      "locale": "en",
+      "status": "published",
+      "collections": [{ "id": "en", "name": "Language · English" }],
+      "slug": "docs/features",
+      "publishedHref": "/docs/features",
+      "diagnostics": [],
+      "metadata": {
+        "complete": 2,
+        "total": 2,
+        "missing": []
+      }
+    },
+    {
+      "id": "doc-media",
+      "title": "Media",
+      "locale": "en",
+      "status": "warning",
+      "collections": [{ "id": "en", "name": "Language · English" }],
+      "slug": "docs/media",
+      "publishedHref": "/docs/media",
+      "diagnostics": [
+        {
+          "level": "warning",
+          "code": "AFFINE_RECOMMENDED_PROPERTY_MISSING",
+          "message": "Media is missing recommended property Description.",
+          "docId": "doc-media"
+        }
+      ],
+      "metadata": {
+        "complete": 1,
+        "total": 2,
+        "missing": ["Description"]
+      }
+    },
+    {
+      "id": "doc-draft",
+      "title": "Draft note",
+      "locale": "en",
+      "status": "draft",
+      "collections": [{ "id": "en", "name": "Language · English" }],
+      "diagnostics": [],
+      "metadata": {
+        "complete": 0,
+        "total": 2,
+        "missing": ["Description", "Translation Key"]
+      }
+    }
+  ],
+  "diagnostics": [
+    {
+      "level": "warning",
+      "code": "AFFINE_RECOMMENDED_PROPERTY_MISSING",
+      "message": "Media is missing recommended property Description.",
+      "docId": "doc-media"
+    }
+  ]
+}
