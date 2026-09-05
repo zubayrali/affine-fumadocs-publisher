@@ -88,6 +88,15 @@ if [[ "$MODE" == "system" ]]; then
   echo "Installed system unit: systemctl status $UNIT_NAME"
   echo "Logs: journalctl -u $UNIT_NAME -f"
 else
+  # User units already run as the installing user; User=/Group= cause status=217/USER.
+  # WantedBy=multi-user.target is system-only; user sessions use default.target.
+  USER_RENDERED="$(mktemp)"
+  sed \
+    -e '/^User=/d' \
+    -e '/^Group=/d' \
+    -e 's|^WantedBy=multi-user.target$|WantedBy=default.target|' \
+    "$RENDERED" > "$USER_RENDERED"
+  mv "$USER_RENDERED" "$RENDERED"
   mkdir -p "$HOME/.config/systemd/user"
   install -m 0644 "$RENDERED" "$HOME/.config/systemd/user/$UNIT_NAME"
   systemctl --user daemon-reload

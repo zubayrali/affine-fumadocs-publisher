@@ -8,6 +8,8 @@ Wants=network-online.target
 
 [Service]
 Type=simple
+# User=/Group= are filled for --system installs. For --user units the
+# installer strips them (user systemd cannot set User=).
 User=__PUBLISHER_USER__
 Group=__PUBLISHER_GROUP__
 WorkingDirectory=__PUBLISHER_ROOT__
@@ -32,4 +34,5 @@ RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
 RestrictSUIDSGID=true
 
 [Install]
+# multi-user.target for --system; installer rewrites to default.target for --user.
 WantedBy=multi-user.target
