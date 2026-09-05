@@ -5,6 +5,11 @@ import { defineDocs } from 'fumadocs-mdx/macro';
 import { metaSchema, pageSchema } from 'fumadocs-core/source/schema';
 import { z } from 'zod';
 
+const looseBoolean = z
+  .union([z.boolean(), z.enum(['true', 'false'])])
+  .optional()
+  .transform((value) => value === true || value === 'true');
+
 const docs = defineDocs({
   dir: 'content/docs',
   docs: {
@@ -15,8 +20,9 @@ const docs = defineDocs({
       affineProperties: z.record(z.string(), z.unknown()).optional(),
       outgoingLinks: z.array(z.string()).optional(),
       locale: z.string().optional(),
-      unlisted: z.boolean().optional(),
-      featured: z.boolean().optional(),
+      unlisted: looseBoolean,
+      featured: looseBoolean,
+      slides: looseBoolean,
       order: z.number().optional(),
       created: z.string().optional(),
       modified: z.string().optional(),

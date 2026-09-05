@@ -2,6 +2,11 @@
 @import 'fumadocs-ui/css/neutral.css';
 @import 'fumadocs-ui/css/preset.css';
 @import './link-preview.css';
+@import '@affine-fumadocs/wiki/graph/graph.css';
+@import '@affine-fumadocs/wiki/reader/reader.css';
+@import '@affine-fumadocs/wiki/databases/css';
+@import '@affine-fumadocs/wiki/lightbox/css';
+@import '@affine-fumadocs/wiki/slides/slides.css';
 
 html {
   scrollbar-gutter: stable;

@@ -1,5 +1,6 @@
 import { RootProvider } from 'fumadocs-ui/provider/next';
 import './global.css';
+import 'katex/dist/katex.css';
 import { Inter } from 'next/font/google';
 import type { Metadata } from 'next';
 import wikiConfig from '@/affine-wiki.config';

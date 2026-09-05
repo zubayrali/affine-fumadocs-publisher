@@ -1,0 +1,219 @@
+/* Article image trigger + lightbox overlay using Fumadocs fd tokens.
+   The viewing surface stays optically neutral so image colors are not shifted. */
+
+#nd-page .article-image-trigger {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  color: inherit;
+  cursor: zoom-in;
+}
+
+#nd-page .article-image-trigger:focus-visible {
+  outline: 2px solid var(--color-fd-primary);
+  outline-offset: 4px;
+}
+
+#nd-page .article-image-trigger img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Two or more Markdown images on the same line become a responsive gallery. */
+#nd-page p:has(> .figure-image + .figure-image) {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(14rem, 100%), 1fr));
+  align-items: start;
+  gap: 0.75rem;
+}
+
+#nd-page p:has(> .figure-image + .figure-image) > .figure-image {
+  min-width: 0;
+  margin: 0;
+}
+
+#nd-page p:has(> .figure-image + .figure-image) .article-image-trigger {
+  aspect-ratio: 4 / 3;
+}
+
+#nd-page p:has(> .figure-image + .figure-image) img {
+  height: 100%;
+  object-fit: cover;
+}
+
+.article-lightbox {
+  --lightbox-ink: #f7f4ec;
+  --lightbox-muted: rgb(247 244 236 / 0.66);
+  --lightbox-surface: rgb(19 18 16 / 0.72);
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  color: var(--lightbox-ink);
+  color-scheme: dark;
+  isolation: isolate;
+}
+
+.article-lightbox-backdrop {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  width: 100%;
+  border: 0;
+  background:
+    radial-gradient(circle at 50% 42%, rgb(62 56 45 / 0.32), transparent 48%),
+    rgb(8 8 7 / 0.96);
+  cursor: zoom-out;
+}
+
+.article-lightbox-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: max(1rem, env(safe-area-inset-top))
+    max(1rem, env(safe-area-inset-right)) 0;
+}
+
+.article-lightbox-count {
+  margin-right: auto;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.6875rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.16em;
+  color: var(--lightbox-muted);
+}
+
+.article-lightbox-action,
+.article-lightbox-nav {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 1px solid rgb(255 255 255 / 0.16);
+  border-radius: 999px;
+  background: var(--lightbox-surface);
+  color: var(--lightbox-ink);
+  backdrop-filter: blur(12px);
+  transition:
+    background-color 140ms ease,
+    border-color 140ms ease,
+    opacity 140ms ease;
+}
+
+.article-lightbox-action svg,
+.article-lightbox-nav svg {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.article-lightbox-action:hover,
+.article-lightbox-nav:hover:not(:disabled) {
+  border-color: rgb(255 255 255 / 0.36);
+  background: rgb(54 51 44 / 0.86);
+}
+
+.article-lightbox-action:focus-visible,
+.article-lightbox-nav:focus-visible {
+  outline: 2px solid var(--lightbox-ink);
+  outline-offset: 3px;
+}
+
+.article-lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.article-lightbox-nav:disabled {
+  opacity: 0.22;
+  cursor: default;
+}
+
+.article-lightbox-previous {
+  left: max(1rem, env(safe-area-inset-left));
+}
+
+.article-lightbox-next {
+  right: max(1rem, env(safe-area-inset-right));
+}
+
+.article-lightbox-stage {
+  display: grid;
+  min-height: 0;
+  place-items: center;
+  padding: 1rem 5.5rem;
+  touch-action: pan-y pinch-zoom;
+}
+
+.article-lightbox-stage img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: 100%;
+  object-fit: contain;
+  user-select: none;
+  filter: drop-shadow(0 1.5rem 3rem rgb(0 0 0 / 0.34));
+}
+
+.article-lightbox-caption {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  min-height: 4.5rem;
+  padding: 0 max(1rem, env(safe-area-inset-right))
+    max(1rem, env(safe-area-inset-bottom))
+    max(1rem, env(safe-area-inset-left));
+}
+
+.article-lightbox-caption p {
+  max-width: 60ch;
+  margin: 0;
+  font-family: var(--font-serif, ui-serif, Georgia, serif);
+  font-size: clamp(0.9375rem, 1.5vw, 1.125rem);
+  line-height: 1.45;
+}
+
+.article-lightbox-caption span {
+  margin-left: auto;
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--lightbox-muted);
+}
+
+@media (max-width: 40rem) {
+  .article-lightbox-stage {
+    padding: 0.75rem;
+  }
+
+  .article-lightbox-nav {
+    display: none;
+  }
+
+  .article-lightbox-caption {
+    display: block;
+    min-height: 5rem;
+  }
+
+  .article-lightbox-caption span {
+    display: block;
+    margin-top: 0.375rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .article-lightbox-action,
+  .article-lightbox-nav {
+    transition: none;
+  }
+}

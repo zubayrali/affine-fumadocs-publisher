@@ -1,0 +1,83 @@
+/* Reader-mode chrome hiding. No brand tokens — Fumadocs layout ids only. */
+
+html[data-reader-mode='on'] article#nd-page {
+  max-width: 52rem;
+  margin-inline: auto;
+}
+
+html[data-reader-mode='on'] .page-actions,
+html[data-reader-mode='on'] .wiki-properties,
+html[data-reader-mode='on'] .properties-panel,
+html[data-reader-mode='on'] #nd-toc,
+html[data-reader-mode='on'] [data-toc-popover],
+html[data-reader-mode='on'] [data-backlinks],
+html[data-reader-mode='on'] [data-local-graph],
+html[data-reader-mode='on'] #comments,
+html[data-reader-mode='on'] [data-page-footer] {
+  display: none !important;
+}
+
+html[data-reader-mode='on'] #nd-docs-layout {
+  --fd-toc-width: 0px !important;
+  --fd-toc-popover-height: 0px !important;
+}
+
+.wiki-reader-exit-bar {
+  position: fixed;
+  bottom: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.375rem 0.375rem 0.375rem 0.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--color-fd-border);
+  background: var(--color-fd-background);
+  box-shadow: 0 2px 12px rgb(0 0 0 / 0.08);
+  animation: wiki-reader-exit-fade-in 0.2s ease;
+}
+
+.wiki-reader-exit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-fd-muted-foreground);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+  white-space: nowrap;
+}
+
+.wiki-reader-exit-btn:hover {
+  color: var(--color-fd-foreground);
+  background: var(--color-fd-accent);
+}
+
+.wiki-reader-exit-hint {
+  font-size: 0.625rem;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  border: 1px solid var(--color-fd-border);
+  color: var(--color-fd-muted-foreground);
+  background: var(--color-fd-muted);
+  line-height: 1.4;
+}
+
+@keyframes wiki-reader-exit-fade-in {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}

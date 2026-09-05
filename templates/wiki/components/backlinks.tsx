@@ -12,7 +12,11 @@ export function Backlinks({ currentUrl, pages }: { currentUrl: string; pages: Ba
   if (backlinks.length === 0) return null;
 
   return (
-    <aside className="not-prose mt-12 border-t border-fd-border pt-6" aria-labelledby="backlinks-heading">
+    <aside
+      data-backlinks
+      className="not-prose mt-12 border-t border-fd-border pt-6"
+      aria-labelledby="backlinks-heading"
+    >
       <h2 id="backlinks-heading" className="flex items-center gap-2 text-base font-semibold text-fd-foreground">
         <CornerDownLeft className="size-4 text-fd-muted-foreground" aria-hidden="true" />
         Backlinks

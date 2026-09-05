@@ -1,0 +1,33 @@
+---
+title: Rich content
+description: Mermaid diagrams, KaTeX math, and slide mode in the wiki template.
+tags: [wiki, rich-content]
+slides: true
+outgoingLinks: ["/docs", "/docs/features"]
+---
+
+# Rich content
+
+This page exercises Mermaid, math, and `slides: true` routing.
+
+## Diagram
+
+```mermaid
+flowchart LR
+  A[AFFiNE snapshot] --> B[Fumadocs MDX]
+  B --> C[Static site]
+```
+
+## Math
+
+Inline: $c = \pm\sqrt{a^2 + b^2}$
+
+$$
+\int_a^b f(x)\,dx = F(b) - F(a)
+$$
+
+## Slides
+
+Open the Slides control in the page actions bar, or visit
+[/docs/rich-content/slides](/docs/rich-content/slides). Headings become slide
+breaks.

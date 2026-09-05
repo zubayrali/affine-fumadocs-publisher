@@ -1,0 +1,88 @@
+{
+  "databaseBlockId": "fixture-topics",
+  "title": "Topic tracker",
+  "titleColumnId": "title",
+  "columns": [
+    {
+      "id": "status",
+      "name": "Status",
+      "type": "select",
+      "options": [
+        { "id": "ready", "value": "Ready" },
+        { "id": "draft", "value": "Draft" },
+        { "id": "review", "value": "In review" }
+      ]
+    },
+    {
+      "id": "owner",
+      "name": "Owner",
+      "type": "text"
+    },
+    {
+      "id": "priority",
+      "name": "Priority",
+      "type": "select",
+      "options": [
+        { "id": "high", "value": "High" },
+        { "id": "medium", "value": "Medium" },
+        { "id": "low", "value": "Low" }
+      ]
+    }
+  ],
+  "views": [
+    {
+      "id": "table",
+      "name": "Table",
+      "mode": "table",
+      "columns": [
+        { "id": "title", "width": 220 },
+        { "id": "status", "width": 120 },
+        { "id": "owner", "width": 140 },
+        { "id": "priority", "width": 110 }
+      ]
+    },
+    {
+      "id": "board",
+      "name": "Board",
+      "mode": "kanban",
+      "groupBy": { "columnId": "status", "name": "Status", "type": "select" }
+    },
+    {
+      "id": "cards",
+      "name": "Gallery",
+      "mode": "gallery"
+    }
+  ],
+  "rows": [
+    {
+      "rowBlockId": "row-welcome",
+      "title": "Welcome",
+      "href": "/docs",
+      "cells": {
+        "Status": { "columnId": "status", "type": "select", "value": "Ready" },
+        "Owner": { "columnId": "owner", "type": "text", "value": "Editors" },
+        "Priority": { "columnId": "priority", "type": "select", "value": "High" }
+      }
+    },
+    {
+      "rowBlockId": "row-features",
+      "title": "Feature baseline",
+      "href": "/docs/features",
+      "cells": {
+        "Status": { "columnId": "status", "type": "select", "value": "In review" },
+        "Owner": { "columnId": "owner", "type": "text", "value": "Maintainers" },
+        "Priority": { "columnId": "priority", "type": "select", "value": "Medium" }
+      }
+    },
+    {
+      "rowBlockId": "row-media",
+      "title": "Media fixtures",
+      "href": "/docs/media",
+      "cells": {
+        "Status": { "columnId": "status", "type": "select", "value": "Draft" },
+        "Owner": { "columnId": "owner", "type": "text", "value": "Design" },
+        "Priority": { "columnId": "priority", "type": "select", "value": "Low" }
+      }
+    }
+  ]
+}

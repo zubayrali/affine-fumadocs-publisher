@@ -13,6 +13,8 @@ export interface WikiFeatures {
   graph: boolean;
   lightbox: boolean;
   linkPreviews: boolean;
+  math: boolean;
+  mermaid: boolean;
   multilingual: boolean;
   properties: boolean;
   publishingStudio: boolean;

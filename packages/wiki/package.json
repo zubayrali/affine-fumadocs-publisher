@@ -6,18 +6,88 @@
     ".": {
       "types": "./src/index.d.ts",
       "default": "./src/index.mjs"
-    }
+    },
+    "./databases": {
+      "types": "./src/databases/index.ts",
+      "default": "./src/databases/index.ts"
+    },
+    "./databases/css": "./src/databases/database.css",
+    "./lightbox": {
+      "types": "./src/lightbox/index.ts",
+      "default": "./src/lightbox/index.ts"
+    },
+    "./lightbox/css": "./src/lightbox/lightbox.css",
+    "./graph": {
+      "types": "./src/graph/index.ts",
+      "default": "./src/graph/index.ts"
+    },
+    "./graph/graph.css": "./src/graph/graph.css",
+    "./reader": {
+      "types": "./src/reader/index.ts",
+      "default": "./src/reader/index.ts"
+    },
+    "./reader/css": "./src/reader/reader.css",
+    "./reader/reader.css": "./src/reader/reader.css",
+    "./mdx": {
+      "types": "./src/mdx/index.d.ts",
+      "default": "./src/mdx/index.mjs"
+    },
+    "./mdx/mermaid": {
+      "types": "./src/mdx/mermaid.tsx",
+      "default": "./src/mdx/mermaid.tsx"
+    },
+    "./slides": {
+      "types": "./src/slides/index.ts",
+      "default": "./src/slides/index.ts"
+    },
+    "./slides/slides.css": "./src/slides/slides.css"
   },
   "scripts": {
-    "test": "node --test test/*.test.mjs",
+    "test": "node --test test/*.test.mjs test/*.test.ts",
     "types:check": "tsc --noEmit"
   },
   "peerDependencies": {
+    "beautiful-mermaid": "*",
+    "d3-force": "^3.0.0",
+    "fumadocs-core": "*",
+    "fumadocs-ui": "*",
+    "katex": "*",
+    "lucide-react": ">=0.400.0",
     "next": ">=16",
     "react": ">=19",
-    "react-dom": ">=19"
+    "react-dom": ">=19",
+    "react-force-graph-2d": "^1.29.0",
+    "rehype-katex": "*",
+    "remark-math": "*"
+  },
+  "peerDependenciesMeta": {
+    "beautiful-mermaid": { "optional": true },
+    "d3-force": { "optional": true },
+    "fumadocs-core": { "optional": true },
+    "fumadocs-ui": { "optional": true },
+    "katex": { "optional": true },
+    "lucide-react": { "optional": true },
+    "react-force-graph-2d": { "optional": true },
+    "rehype-katex": { "optional": true },
+    "remark-math": { "optional": true }
   },
   "devDependencies": {
+    "@types/d3-force": "^3.0.10",
+    "@types/node": "^26.3.0",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.5",
+    "beautiful-mermaid": "^1.1.3",
+    "d3-force": "^3.0.0",
+    "fumadocs-core": "16.15.4",
+    "fumadocs-ui": "npm:@fumadocs/base-ui@16.15.4",
+    "katex": "^0.17.0",
+    "lucide-react": "^1.34.0",
+    "next": "16.3.3",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-force-graph-2d": "^1.29.1",
+    "rehype-katex": "^7.0.1",
+    "remark-math": "^6.0.0",
     "typescript": "^6.0.3"
   },
   "license": "MIT"

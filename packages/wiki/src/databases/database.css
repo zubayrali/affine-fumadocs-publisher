@@ -1,0 +1,230 @@
+.affine-db {
+  margin-block: 1.75rem;
+  overflow: hidden;
+  border: 1px solid var(--color-fd-border);
+  border-radius: 0.5rem;
+  background: color-mix(in oklab, var(--color-fd-card) 82%, transparent);
+}
+
+/* React Flow disables pointer events for non-selectable nodes by default.
+   Database controls remain interactive without making the canvas node selectable. */
+.canvas-flow .react-flow__node:has(.affine-db) {
+  pointer-events: auto !important;
+}
+
+.affine-db-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--color-fd-border);
+  padding: 0.85rem 1rem 0;
+}
+
+.affine-db-heading h3 {
+  margin: 0.1rem 0 0.7rem;
+  font-size: 1.05rem;
+  font-weight: 650;
+}
+
+.affine-db-eyebrow,
+.affine-db-column-kind {
+  color: var(--color-fd-muted-foreground);
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.625rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.affine-db-tabs {
+  display: flex;
+  align-self: stretch;
+  gap: 0.15rem;
+}
+
+.affine-db-tabs button {
+  position: relative;
+  border: 0;
+  background: transparent;
+  padding: 0.65rem 0.7rem;
+  color: var(--color-fd-muted-foreground);
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.affine-db-tabs button[aria-selected='true'] {
+  color: var(--color-fd-foreground);
+}
+
+.affine-db-tabs button[aria-selected='true']::after {
+  position: absolute;
+  right: 0.7rem;
+  bottom: -1px;
+  left: 0.7rem;
+  height: 2px;
+  background: var(--color-fd-primary);
+  content: '';
+}
+
+.affine-db-tabs button:focus-visible {
+  outline: 2px solid var(--color-fd-primary);
+  outline-offset: -2px;
+}
+
+.affine-db-table-wrap {
+  overflow-x: auto;
+}
+
+.affine-db-table {
+  width: 100%;
+  min-width: 34rem;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+}
+
+.affine-db-table th,
+.affine-db-table td {
+  border-right: 1px solid var(--color-fd-border);
+  border-bottom: 1px solid var(--color-fd-border);
+  padding: 0.65rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.affine-db-table th:last-child,
+.affine-db-table td:last-child {
+  border-right: 0;
+}
+
+.affine-db-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.affine-db-table th {
+  background: color-mix(in oklab, var(--color-fd-muted) 45%, transparent);
+  color: var(--color-fd-muted-foreground);
+  font-size: 0.7rem;
+  font-weight: 550;
+}
+
+.affine-db-column-kind {
+  margin-right: 0.45rem;
+  text-transform: none;
+}
+
+.affine-db-table a,
+.affine-db-card a {
+  color: var(--color-fd-foreground);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.affine-db-table a:hover,
+.affine-db-card a:hover {
+  color: var(--color-fd-primary);
+}
+
+.affine-db-empty {
+  color: var(--color-fd-muted-foreground);
+}
+
+.affine-db-chip {
+  display: inline-flex;
+  max-width: 100%;
+  border: 1px solid color-mix(in oklab, var(--color-fd-primary) 28%, var(--color-fd-border));
+  border-radius: 0.25rem;
+  background: color-mix(in oklab, var(--color-fd-primary) 8%, transparent);
+  padding: 0.12rem 0.42rem;
+  font-size: 0.68rem;
+  line-height: 1.25;
+}
+
+.affine-db-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+  gap: 0.75rem;
+  padding: 0.85rem;
+}
+
+.affine-db-gallery-meta {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0.65rem 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--color-fd-muted-foreground);
+  font-size: 0.75rem;
+}
+
+.affine-db-gallery-meta li {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.affine-db-kanban {
+  display: grid;
+  grid-auto-columns: minmax(13rem, 1fr);
+  grid-auto-flow: column;
+  gap: 1px;
+  overflow-x: auto;
+  background: var(--color-fd-border);
+}
+
+.affine-db-lane {
+  min-height: 10rem;
+  background: var(--color-fd-background);
+  padding: 0.75rem;
+}
+
+.affine-db-lane > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.65rem;
+  color: var(--color-fd-muted-foreground);
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.68rem;
+}
+
+.affine-db-lane > div {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.affine-db-card {
+  min-height: 3.25rem;
+  border: 1px solid var(--color-fd-border);
+  border-radius: 0.375rem;
+  background: var(--color-fd-card);
+  padding: 0.7rem;
+  font-size: 0.8rem;
+  box-shadow: 0 3px 12px color-mix(in oklab, #000 5%, transparent);
+}
+
+.affine-db-error {
+  border-left: 2px solid var(--color-fd-error, #b91c1c);
+  padding-left: 0.75rem;
+  color: var(--color-fd-muted-foreground);
+  font-size: 0.875rem;
+}
+
+@media (max-width: 640px) {
+  .affine-db-heading {
+    align-items: start;
+    flex-direction: column;
+    padding-top: 0.75rem;
+  }
+
+  .affine-db-heading h3 {
+    margin-bottom: 0;
+  }
+
+  .affine-db-tabs {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .affine-db-tabs button {
+    white-space: nowrap;
+  }
+}

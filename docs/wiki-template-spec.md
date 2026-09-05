@@ -44,13 +44,21 @@ template and downstream sites.
   atomic AFFiNE snapshot publishing, media materialization, publication controls,
   native custom properties, hierarchical tags, AFFiNE-native document link
   rewriting (including absolute workspace URLs), unpublished-link diagnostics,
-  generated backlinks, orphan-page detection, and hover link previews.
+  generated backlinks, orphan-page detection, hover link previews, article
+  lightbox galleries (`@affine-fumadocs/wiki/lightbox`), AFFiNE database
+  table / gallery / kanban views (`@affine-fumadocs/wiki/databases`), global and
+  local knowledge graphs (`@affine-fumadocs/wiki/graph`), and thin reader mode
+  (`@affine-fumadocs/wiki/reader`).
+- Complete in this slice: Mermaid diagrams (`beautiful-mermaid` +
+  `remarkMdxMermaid`), KaTeX math (`remark-math` / `rehype-katex`), and
+  `slides: true` → `/docs/.../slides` via `SlideViewer`, all feature-gated
+  through `WikiConfig.features` and `createWikiMdxOptions`.
 - Deferred in this slice: body-level note transclusion. AFFiNE's Markdown export
   flattens embed-linked documents into ordinary workspace links, so embedded
   bodies are not recoverable from the current bridge export.
-- Next slices: global/local graph, reader tools and lightbox, canvas, databases,
-  multilingual/homepage controls, then Publishing Studio and the remaining
-  rich-content/output modules.
+- Next slices: canvas, multilingual/homepage controls,
+  citations/sidenotes/annotations/orbit, then Publishing Studio and remaining
+  output modules.
 
 Optional modules may be disabled in `affine-wiki.config.ts`, but the starter
 must include and exercise their implementations.

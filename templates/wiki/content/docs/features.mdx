@@ -2,7 +2,7 @@
 title: Wiki feature baseline
 description: Reusable capabilities included by the template.
 tags: [wiki, publishing/features]
-outgoingLinks: ["/docs"]
+outgoingLinks: ["/docs", "/docs/media"]
 affineProperties: {"Audience":"Editors","Status":"Ready","Review date":"2026-09-04"}
 ---
 
@@ -10,8 +10,9 @@ affineProperties: {"Audience":"Editors","Status":"Ready","Review date":"2026-09-
 
 The template currently includes Fumadocs search and machine-readable routes,
 native AFFiNE publication properties, custom page properties, hierarchical tag
-browsing, AFFiNE document-link rewriting, backlinks, orphan detection, and
-hover link previews.
+browsing, AFFiNE document-link rewriting, backlinks, orphan detection, hover
+link previews, article lightbox galleries, and AFFiNE database table / gallery /
+kanban views.
 
 ## AFFiNE document links
 
@@ -22,9 +23,15 @@ Obsidian `[[wikilink]]` syntax is not supported.
 
 Hover a published internal link like [Welcome](/docs) to preview its content.
 
+## Lightbox and databases
+
+See the [media fixtures](/docs/media) page for click-to-enlarge images and a
+sample database with table, board, and gallery views. Feature flags live in
+`affine-wiki.config.ts` (`lightbox`, `databases`).
+
 ## Still in progress
 
 Body-level note transclusion is deferred: AFFiNE's Markdown export flattens
 embed-linked documents into the same link form, so the snapshot cannot recover
-embedded bodies yet. Graph, reader tools, canvas, databases, multilingual
-homepage controls, and Publishing Studio remain later vertical slices.
+embedded bodies yet. Graph, reader tools, canvas, multilingual homepage
+controls, and Publishing Studio remain later vertical slices.

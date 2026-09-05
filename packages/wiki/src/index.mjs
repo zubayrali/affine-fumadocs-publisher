@@ -6,6 +6,8 @@ const FEATURE_DEFAULTS = Object.freeze({
   graph: true,
   lightbox: true,
   linkPreviews: true,
+  math: true,
+  mermaid: true,
   multilingual: true,
   properties: true,
   publishingStudio: true,
