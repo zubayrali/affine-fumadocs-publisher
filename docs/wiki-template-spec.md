@@ -49,7 +49,9 @@ template and downstream sites.
   table / gallery / kanban views (`@affine-fumadocs/wiki/databases`), global and
   local knowledge graphs (`@affine-fumadocs/wiki/graph`), thin reader mode
   (`@affine-fumadocs/wiki/reader`), Mermaid / KaTeX / slides via
-  `createWikiMdxOptions`, multilingual helpers + props-driven `LocaleSwitcher`
+  `createWikiMdxOptions`, citations / sidenotes / rough annotations / orbit
+  review (`@affine-fumadocs/wiki/{citations,sidenotes,annotations,review}`),
+  multilingual helpers + props-driven `LocaleSwitcher`
   (`@affine-fumadocs/wiki/site`), a neutral Publishing Studio shell
   (`@affine-fumadocs/wiki/studio`) with a fixture-backed `/publishing` admin
   route (dev-only; excluded from production reader builds), and AFFiNE edgeless
@@ -58,14 +60,13 @@ template and downstream sites.
 - Complete in this slice: site-control helpers (`isSiteControlPage`), optional
   `buildHomeModel` stub, studio config validators (plain `.mjs`, no Zod), and
   feature-gated template wiring for `features.multilingual` /
-  `features.publishingStudio`.
-- Deferred in this slice: body-level note transclusion. AFFiNE's Markdown export
+  `features.publishingStudio` / rich-content flags.
+- Hard-deferred: body-level note transclusion. AFFiNE's Markdown export
   flattens embed-linked documents into ordinary workspace links, so embedded
   bodies are not recoverable from the current bridge export. Live publisher
   status polling, AFFiNE homepage table compilation, canvas markdown-node MDX
-  previews, and in-node database embeds remain later.
-- Next slices: citations/sidenotes/annotations/orbit, then remaining
-  output modules (RSS/sitemap/OG polish as needed).
+  previews, in-node database embeds, and remaining output polish
+  (RSS/sitemap/OG) remain later.
 
 Optional modules may be disabled in `affine-wiki.config.ts`, but the starter
 must include and exercise their implementations.

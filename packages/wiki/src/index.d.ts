@@ -6,6 +6,7 @@ export interface WikiLocale {
 }
 
 export interface WikiFeatures {
+  annotations: boolean;
   backlinks: boolean;
   canvas: boolean;
   citations: boolean;
@@ -19,6 +20,7 @@ export interface WikiFeatures {
   properties: boolean;
   publishingStudio: boolean;
   readerMode: boolean;
+  review: boolean;
   rss: boolean;
   search: boolean;
   sidenotes: boolean;

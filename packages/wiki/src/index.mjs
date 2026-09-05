@@ -1,4 +1,5 @@
 const FEATURE_DEFAULTS = Object.freeze({
+  annotations: true,
   backlinks: true,
   canvas: true,
   citations: true,
@@ -12,6 +13,7 @@ const FEATURE_DEFAULTS = Object.freeze({
   properties: true,
   publishingStudio: true,
   readerMode: true,
+  review: true,
   rss: true,
   search: true,
   sidenotes: true,

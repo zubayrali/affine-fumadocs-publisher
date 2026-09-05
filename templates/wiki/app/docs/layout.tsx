@@ -2,6 +2,9 @@ import { source } from '@/lib/source';
 import { DocsLayout } from 'fumadocs-ui/layouts/docs';
 import { baseOptions } from '@/lib/layout.shared';
 import { LinkPreview } from '@/components/link-preview';
+import { CitationTooltip } from '@affine-fumadocs/wiki/citations';
+import { RoughAnnotations } from '@affine-fumadocs/wiki/annotations';
+import { Sidenotes } from '@affine-fumadocs/wiki/sidenotes';
 import { LocaleSwitcher } from '@affine-fumadocs/wiki/site';
 import wikiConfig from '@/affine-wiki.config';
 
@@ -33,6 +36,9 @@ export default function Layout({ children }: LayoutProps<'/docs'>) {
     >
       {children}
       <LinkPreview enabled={wikiConfig.features.linkPreviews} />
+      <CitationTooltip enabled={wikiConfig.features.citations} />
+      <Sidenotes enabled={wikiConfig.features.sidenotes} />
+      <RoughAnnotations enabled={wikiConfig.features.annotations} />
     </DocsLayout>
   );
 }

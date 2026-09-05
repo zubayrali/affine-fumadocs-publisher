@@ -1,0 +1,732 @@
+/* Spaced-repetition review widget — square corners, hairline frames,
+   mono labels. Per-block color theming via --rv-color-* custom
+   properties. */
+
+:root {
+  --rv-lost: #c2410c;
+}
+
+.dark {
+  --rv-lost: #fb923c;
+}
+
+/* ── Container ── */
+
+.rv-block {
+  margin: 2.5rem auto;
+  max-width: 640px;
+  border: 1px solid var(--color-fd-border);
+  border-top: 2px solid var(--rv-color-accent, var(--color-fd-primary));
+  background: color-mix(in oklab, var(--rv-color-accent, var(--color-fd-primary)) 3%, var(--color-fd-background));
+  overflow: hidden;
+}
+
+.rv-active .rv-area {
+  padding: 2.5rem 2rem 2rem;
+}
+
+/* ── Color theming ── */
+
+.rv-themed {
+  background: color-mix(in oklab, var(--rv-color-accent) 4%, var(--color-fd-background));
+}
+
+.rv-themed .rv-tl-item.past:not(.final) .rv-tl-marker::after {
+  background: var(--rv-color-accent);
+}
+
+.rv-themed .rv-tl-item.current:not(.final) .rv-tl-marker::after {
+  border-color: var(--rv-color-accent);
+  background: color-mix(in oklab, var(--rv-color-accent) 12%, transparent);
+}
+
+.rv-themed .rv-tl-item.current .rv-tl-label,
+.rv-themed .rv-tl-item.past .rv-tl-label {
+  color: var(--rv-color-accent);
+}
+
+.rv-themed .rv-tl-item.final.past .rv-tl-marker,
+.rv-themed .rv-tl-item.final.current .rv-tl-marker {
+  color: var(--rv-color-accent);
+}
+
+.rv-themed .rv-tl-item.preview-gain .rv-tl-marker::after,
+.rv-themed .rv-tl-item.preview-target:not(.final):not(.current) .rv-tl-marker::after {
+  background: var(--rv-color-accent);
+}
+
+.rv-themed .rv-tl-item.preview-gain .rv-tl-label {
+  color: var(--rv-color-accent);
+}
+
+.rv-themed .rv-tl-item.preview-gain::before {
+  background: var(--rv-color-accent);
+}
+
+.rv-themed .rv-tl-item.preview-target:not(.final) .rv-tl-marker::after {
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--rv-color-accent) 18%, transparent);
+}
+
+.rv-themed .rv-tl-item.final.preview-gain .rv-tl-marker {
+  color: var(--rv-color-accent);
+}
+
+.rv-themed .rv-tl-item.final.preview-gain::after {
+  border-left-color: var(--rv-color-accent);
+}
+
+.rv-themed .rv-marquee p {
+  color: var(--rv-color-accent);
+}
+
+.rv-themed .rv-done {
+  color: var(--rv-color-accent);
+}
+
+.rv-themed .rv-idle-chip svg {
+  color: var(--rv-color-accent);
+}
+
+/* ── Card stack ── */
+
+/* Grid-stacked deck: all cards share one cell, motion applies the
+   quantum.country scale/offset (1/0.95/0.9, 0/20/40px). The deck has a
+   FIXED height (quantum uses fixed-size cards) so it never grows/shrinks
+   as prompts of different lengths cycle through — long content scrolls
+   inside the card instead. The bottom margin leaves room for the offset
+   back-card edges to peek out. */
+.rv-stack {
+  display: grid;
+  height: 28rem;
+  margin-bottom: 3.25rem;
+}
+
+.rv-card-dyn {
+  grid-area: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.rv-card-dyn > .rv-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* Two-phase space allocation inside the fixed card. Pre-reveal the question
+   owns the card (big image, answer area is just the cover strip); on reveal
+   the question yields — its image shrinks to a thumbnail (click still
+   zooms) — and the answer expands to take the freed space. */
+
+.rv-card-dyn .rv-prompt {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  transition: flex-grow 0.35s ease;
+}
+
+.rv-card-dyn .rv-revealed .rv-prompt {
+  flex-grow: 0;
+  overflow-y: auto;
+}
+
+/* Cover strip pre-reveal; grows into the main region once revealed. */
+.rv-card-dyn .rv-answer-area {
+  flex: 0 1 130px;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  transition: flex-grow 0.35s ease;
+}
+
+.rv-card-dyn .rv-revealed .rv-answer-area {
+  flex-grow: 1;
+}
+
+.rv-card-dyn .rv-answer {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* Question image: large while recalling, thumbnail once answered. */
+.rv-card-dyn .rv-prompt .rv-attachment img {
+  max-height: 12rem;
+  width: auto;
+  transition: max-height 0.35s ease;
+}
+
+.rv-card-dyn .rv-revealed .rv-prompt .rv-attachment img {
+  max-height: 5rem;
+}
+
+/* Occluded deck cards: dimmed, inert, marquee frozen. */
+.rv-occluded {
+  pointer-events: none;
+}
+
+.rv-occluded .rv-card {
+  opacity: 0.85;
+}
+
+.rv-occluded .rv-marquee p {
+  animation-play-state: paused;
+}
+
+.rv-card {
+  border: 1px solid var(--color-fd-border);
+  background: var(--color-fd-card);
+  overflow: hidden;
+}
+
+.dark .rv-block {
+  background: color-mix(in oklab, var(--color-fd-card) 60%, var(--color-fd-background));
+}
+
+.dark .rv-themed {
+  background: color-mix(in oklab, var(--rv-color-accent) 10%, var(--color-fd-background));
+}
+
+/* ── Prompt (question) ── */
+
+/* Quantum hierarchy: big friendly sans question, serif answer. */
+.rv-prompt {
+  padding: 2rem 2rem 1.5rem;
+}
+
+.rv-prompt p {
+  margin: 0;
+  font-size: 1.375rem;
+  font-weight: 600;
+  line-height: 1.5;
+  font-family: var(--font-sans, ui-sans-serif, system-ui, sans-serif);
+  color: var(--color-fd-foreground);
+}
+
+/* ── Attachments (images in Q/A) ── */
+
+.rv-attachment {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.75rem;
+}
+
+.rv-attachment img {
+  max-width: 100%;
+  max-height: 200px;
+  border: 1px solid var(--color-fd-border);
+  object-fit: contain;
+}
+
+/* ── Answer area ── */
+
+.rv-answer-area {
+  position: relative;
+  min-height: 160px;
+  border-top: 1px solid color-mix(in oklab, var(--rv-color-accent, var(--color-fd-primary)) 12%, var(--color-fd-border));
+  /* Subtle tint distinguishes the answer panel from the question. */
+  background: color-mix(in oklab, var(--rv-color-accent, var(--color-fd-primary)) 3%, var(--color-fd-card));
+}
+
+.rv-answer {
+  padding: 1.5rem 2rem 0.5rem;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.rv-answer.visible {
+  opacity: 1;
+}
+
+.rv-answer p {
+  margin: 0;
+  font-size: 1.25rem;
+  line-height: 1.6;
+  font-family: var(--font-spectral), Georgia, serif;
+  color: var(--color-fd-foreground);
+}
+
+/* ── Progress timeline ── */
+
+/* Slim strip — whitespace belongs to the content, not the tracker. */
+.rv-level {
+  padding: 0.5rem 1.5rem 0.875rem;
+  opacity: 0;
+  transition: opacity 0.25s ease 0.1s;
+}
+
+.rv-level.visible {
+  opacity: 1;
+}
+
+/* Quantum stepper: labels above markers, a line threading marker centers,
+   an arrowhead flowing into the final bullseye, dashed circle = pending. */
+.rv-timeline {
+  display: flex;
+}
+
+.rv-tl-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  position: relative;
+}
+
+/* Connecting segment from the previous marker's center to this one's. */
+.rv-tl-item:not(:first-child)::before {
+  content: "";
+  position: absolute;
+  bottom: 6px;
+  left: calc(-50% + 11px);
+  right: calc(50% + 11px);
+  height: 2px;
+  background: var(--color-fd-border);
+  transition: background 0.2s;
+}
+
+/* Arrowhead at the end of the last segment, pointing into the bullseye. */
+.rv-tl-item.final::after {
+  content: "";
+  position: absolute;
+  bottom: 3px;
+  right: calc(50% + 9px);
+  border: 4px solid transparent;
+  border-left: 6px solid var(--color-fd-border);
+  transition: border-left-color 0.2s;
+}
+
+.rv-tl-label {
+  font-size: 0.625rem;
+  font-weight: 500;
+  font-family: var(--font-mono-plex), ui-monospace, SFMono-Regular, monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-fd-muted-foreground);
+  white-space: nowrap;
+  transition: color 0.2s;
+}
+
+.rv-tl-item.current .rv-tl-label {
+  color: var(--color-fd-primary);
+  font-weight: 700;
+}
+
+.rv-tl-item.past .rv-tl-label {
+  color: var(--color-fd-primary);
+}
+
+.rv-tl-marker {
+  position: relative;
+  width: 14px;
+  height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-fd-border);
+  transition: color 0.2s, transform 0.2s;
+}
+
+/* Plain stops render as dots. */
+.rv-tl-item:not(.final) .rv-tl-marker::after {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-fd-border);
+  transition: all 0.2s;
+}
+
+.rv-tl-item.past:not(.final) .rv-tl-marker::after {
+  background: var(--color-fd-primary);
+}
+
+/* Current stop: dashed pending circle. */
+.rv-tl-item.current:not(.final) .rv-tl-marker::after {
+  width: 13px;
+  height: 13px;
+  box-sizing: border-box;
+  border: 1.5px dashed var(--color-fd-primary);
+  background: color-mix(in oklab, var(--color-fd-primary) 12%, transparent);
+}
+
+.rv-tl-item.final.past .rv-tl-marker,
+.rv-tl-item.final.current .rv-tl-marker {
+  color: var(--color-fd-primary);
+}
+
+/* ── Ladder outcome previews (hovering a grade button) ──
+   gain: the path to the projected stop lights up and the target swells.
+   loss: the stops that would be forfeited turn ember (LostProgress). */
+
+.rv-tl-item.preview-gain .rv-tl-marker::after,
+.rv-tl-item.preview-target:not(.final):not(.current) .rv-tl-marker::after {
+  background: var(--color-fd-primary);
+  transform: scale(1.2);
+}
+
+.rv-tl-item.preview-gain .rv-tl-label {
+  color: var(--color-fd-primary);
+}
+
+.rv-tl-item.preview-gain::before {
+  background: var(--color-fd-primary);
+}
+
+.rv-tl-item.preview-target:not(.final) .rv-tl-marker::after {
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--color-fd-primary) 18%, transparent);
+}
+
+.rv-tl-item.final.preview-gain .rv-tl-marker {
+  color: var(--color-fd-primary);
+  transform: scale(1.15);
+}
+
+.rv-tl-item.final.preview-gain::after {
+  border-left-color: var(--color-fd-primary);
+}
+
+.rv-tl-item.preview-lost .rv-tl-marker::after {
+  background: var(--rv-lost, #c2410c);
+}
+
+.rv-tl-item.current.preview-lost .rv-tl-marker::after {
+  border-color: var(--rv-lost, #c2410c);
+  background: color-mix(in oklab, var(--rv-lost, #c2410c) 15%, transparent);
+}
+
+.rv-tl-item.preview-lost .rv-tl-label {
+  color: var(--rv-lost, #c2410c);
+}
+
+.rv-tl-item.preview-lost::before {
+  background: color-mix(in oklab, var(--rv-lost, #c2410c) 50%, var(--color-fd-border));
+}
+
+/* ── Marquee cover ("Click anywhere to reveal") ── */
+
+.rv-cover {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-radius: 0;
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 15%,
+    black 85%,
+    transparent 100%
+  );
+}
+
+.rv-marquee {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Rows glide sideways and ping-pong (alternate); the per-row -13s delay
+   steps set by MarqueeCover put every row at a different phase — the
+   quantum.country shimmer. Keep the drift clearly perceptible (~10px/s). */
+.rv-marquee p {
+  margin: 0;
+  white-space: nowrap;
+  line-height: 2;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--color-fd-primary);
+  opacity: 0.1;
+  animation: rv-scroll 45s linear infinite;
+  will-change: transform;
+}
+
+.rv-marquee span {
+  padding: 0 1.5rem;
+}
+
+@keyframes rv-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* ── Grade buttons (Orbit style) ── */
+
+/* Centered pill buttons (quantum), not full-width toolbar buttons. */
+.rv-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.rv-btn {
+  flex: 0 1 13rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  border: 1px solid var(--color-fd-border);
+  border-radius: 0;
+  padding: 0.65rem 1rem;
+  font-family: var(--font-mono-plex), ui-monospace, SFMono-Regular, monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: transparent;
+  color: var(--color-fd-muted-foreground);
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  touch-action: manipulation;
+}
+
+.rv-btn svg {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.25s ease;
+}
+
+.rv-btn:hover:not(.disabled) {
+  background: color-mix(in srgb, currentColor 8%, transparent);
+  color: var(--color-fd-foreground);
+}
+
+/* Icon micro-interactions: the retry arrow winds back, the check swells. */
+.rv-forgot:hover:not(.disabled) svg {
+  transform: rotate(-50deg);
+}
+
+.rv-remembered:hover:not(.disabled) svg {
+  transform: scale(1.2);
+}
+
+.rv-btn:active:not(.disabled) {
+  background: color-mix(in srgb, currentColor 14%, transparent);
+}
+
+.rv-btn:focus-visible,
+.rv-restart:focus-visible {
+  outline: 2px solid var(--color-fd-ring);
+  outline-offset: 1px;
+}
+
+.rv-remembered:not(.disabled) {
+  border-color: var(--rv-color-accent, var(--color-fd-primary));
+  color: var(--rv-color-accent, var(--color-fd-primary));
+}
+
+.rv-remembered:hover:not(.disabled) {
+  color: var(--rv-color-accent, var(--color-fd-primary));
+}
+
+.rv-btn.disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+/* Skip is a subordinate text action below the two primary buttons
+   (quantum.country shows only two buttons; we keep skip reachable). */
+.rv-skip-link {
+  display: block;
+  margin: 0.5rem auto 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.8125rem;
+  color: var(--color-fd-muted-foreground);
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+}
+
+.rv-skip-link:hover:not(.disabled) {
+  color: var(--color-fd-foreground);
+}
+
+.rv-skip-link.disabled {
+  opacity: 0;
+  cursor: default;
+  pointer-events: none;
+}
+
+/* ── Idle state (compact chip) ── */
+
+.rv-idle {
+  padding: 0.75rem 1.25rem;
+}
+
+.rv-idle-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.rv-idle-status {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.8125rem;
+  color: var(--color-fd-muted-foreground);
+}
+
+.rv-idle-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-family: var(--font-mono-plex), ui-monospace, SFMono-Regular, monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-fd-foreground);
+}
+
+.rv-idle-chip svg {
+  width: 16px;
+  height: 16px;
+  color: var(--color-fd-primary);
+}
+
+.rv-idle-due {
+  font-size: 0.75rem;
+  color: var(--color-fd-muted-foreground);
+}
+
+/* ── Done state ── */
+
+.rv-done-block {
+  padding: 2rem 1.25rem;
+}
+
+.rv-done {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  text-align: center;
+  color: var(--color-fd-primary);
+}
+
+.rv-done p {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--color-fd-muted-foreground);
+}
+
+/* ── Shared restart / review-again button ── */
+
+.rv-restart {
+  cursor: pointer;
+  border: 1px solid var(--color-fd-border);
+  border-radius: 0;
+  padding: 0.375rem 0.75rem;
+  font-family: var(--font-mono-plex), ui-monospace, SFMono-Regular, monospace;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: transparent;
+  color: var(--color-fd-muted-foreground);
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+
+.rv-restart:hover {
+  background: var(--color-fd-accent);
+  color: var(--color-fd-foreground);
+}
+
+/* ── Mobile ── */
+
+@media (max-width: 480px) {
+  .rv-block {
+    max-width: 100%;
+    margin: 1.5rem 0;
+  }
+
+  .rv-active .rv-area {
+    padding: 1rem 0.75rem;
+  }
+
+  .rv-prompt {
+    padding: 1.25rem 1rem 0.75rem;
+  }
+
+  .rv-stack {
+    height: 22rem;
+  }
+
+  .rv-card-dyn .rv-prompt .rv-attachment img {
+    max-height: 8rem;
+  }
+
+  .rv-prompt {
+    padding: 1.5rem 1.25rem 1rem;
+  }
+
+  .rv-prompt p {
+    font-size: 1.125rem;
+  }
+
+  .rv-answer {
+    padding: 1rem 1.25rem 0.5rem;
+  }
+
+  .rv-answer p {
+    font-size: 1.0625rem;
+  }
+
+  .rv-answer-area {
+    min-height: 130px;
+  }
+
+  .rv-level {
+    padding: 0.5rem 1rem 1rem;
+  }
+
+  .rv-tl-label {
+    font-size: 0.5625rem;
+  }
+
+  .rv-btn {
+    padding: 0.625rem 0.75rem;
+    font-size: 0.6875rem;
+    gap: 0.25rem;
+  }
+
+  .rv-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .rv-idle-inner {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .rv-attachment img {
+    max-height: 150px;
+  }
+}
+
+/* ── Reduced motion ── */
+
+@media (prefers-reduced-motion: reduce) {
+  .rv-marquee p {
+    animation: none;
+  }
+  .rv-card-dyn .rv-prompt,
+  .rv-card-dyn .rv-answer-area,
+  .rv-card-dyn .rv-prompt .rv-attachment img {
+    transition: none;
+  }
+  .rv-dot-pulse {
+    animation: none;
+    opacity: 0.5;
+  }
+}

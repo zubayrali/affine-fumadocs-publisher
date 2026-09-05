@@ -1,0 +1,213 @@
+/* Margin sidenotes — plain Tufte marginalia: no box, no border, no fill; just
+   a smaller serif gloss in the margin with a quiet superscript reference. The
+   only decoration is a faint ink wash on hover / on arrival. Side placement
+   (left/right/popover) and the arrival cue are driven by
+   components/sidenotes.tsx at runtime. */
+
+:root {
+  --sidenote-width: 16rem; /* fallback; runtime width is set per-note by Sidenotes */
+  --sidenote-accent: var(--color-fd-primary);
+  --sidenote-wash: color-mix(in srgb, currentColor 6%, transparent);
+}
+
+.sidenote {
+  cursor: pointer;
+}
+
+/* Reference marker: a quiet superscript figure in the running ink; no
+   underline. It simply bolds a touch on hover (the note also washes). */
+.sidenote-label {
+  position: relative;
+  cursor: pointer;
+}
+
+.sidenote-number {
+  vertical-align: super;
+  font-size: 0.72em;
+  font-weight: 500;
+  line-height: 0;
+  font-variant-numeric: oldstyle-nums;
+  transition: font-weight 0.15s ease;
+}
+
+.sidenote:hover .sidenote-number,
+.sidenote.active .sidenote-number,
+.sidenote-label:focus-visible .sidenote-number {
+  font-weight: 600;
+}
+
+.sidenote-arrow {
+  display: none;
+  margin-left: 0.15em;
+  vertical-align: middle;
+  color: var(--sidenote-accent);
+  pointer-events: none;
+  transition: transform 0.15s ease;
+}
+
+/* Show the expand chevron when the marker opens a popover (click-to-open). */
+.sidenote-label[data-inline] .sidenote-arrow-down {
+  display: inline-block;
+  width: 8px;
+  height: 5px;
+}
+
+.sidenote-label.active .sidenote-arrow-down {
+  transform: rotate(180deg);
+}
+
+.sidenote-label[data-inline] {
+  cursor: pointer;
+}
+
+/* Keyboard focus ring for the clickable marker. */
+.sidenote-label:focus-visible {
+  outline: 2px solid var(--sidenote-accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.sidenote-content {
+  display: none;
+  opacity: 0;
+  position: absolute;
+  width: var(--sidenote-width);
+  box-sizing: border-box;
+  /* Below the TOC popover bar (z-10) so its backdrop covers margin notes. */
+  z-index: 5;
+  line-height: 1.55;
+  font-size: 0.86em;
+  font-family: ui-serif, Georgia, "Times New Roman", serif;
+  padding: 0.25rem 0.55rem;
+  border-radius: 4px;
+  transition:
+    background-color 0.25s ease,
+    opacity 0.22s cubic-bezier(0.19, 1, 0.22, 1),
+    transform 0.22s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+/* Quiet lead figure at the head of the note (Tufte repeats the in-text
+   number); components/sidenotes.tsx sets data-sidenote-number. */
+.sidenote-content::before {
+  content: attr(data-sidenote-number);
+  float: left;
+  margin-right: 0.4em;
+  font-size: 0.8em;
+  font-weight: 600;
+  line-height: 1.55;
+  color: var(--color-fd-muted-foreground);
+  font-variant-numeric: oldstyle-nums;
+}
+
+.sidenote-content.sidenote-right,
+.sidenote-content.sidenote-left {
+  opacity: 1;
+  transform: none;
+}
+
+/* Hover / cross-highlight (label ↔ note): a faint ink wash, nothing more. */
+.sidenote-content:hover,
+.sidenote-content.sidenote-highlight,
+.sidenote-content:focus-within {
+  background-color: var(--sidenote-wash);
+}
+
+/* Arrival cue (marker click / shared #sidenote-N link): a soft ink wash that
+   fades out — calm, not busy. Margin notes only; a popover's appearance is
+   its own cue. */
+.sidenote-content.sidenote-right.sidenote-arrive,
+.sidenote-content.sidenote-left.sidenote-arrive {
+  animation: sidenote-arrive 1.3s ease-out;
+}
+
+@keyframes sidenote-arrive {
+  0% {
+    background-color: color-mix(in srgb, currentColor 13%, transparent);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidenote-content.sidenote-right.sidenote-arrive,
+  .sidenote-content.sidenote-left.sidenote-arrive {
+    animation: none;
+    background-color: color-mix(in srgb, currentColor 11%, transparent);
+  }
+}
+
+/* Crossfade on layout change: the engine fades notes out (`.sidenote-hiding`)
+   before repositioning them, then removes the class so they fade back in at
+   their new spot — the move happens while invisible and is never seen. */
+.sidenote-content.sidenote-hiding {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@starting-style {
+  .sidenote-content.sidenote-right {
+    opacity: 0;
+    transform: translateX(-0.6rem);
+  }
+
+  .sidenote-content.sidenote-left {
+    opacity: 0;
+    transform: translateX(0.6rem);
+  }
+}
+
+/* No margin room: the note opens as a floating popover anchored to its
+   label (positioned by components/sidenotes.tsx via floating-ui). As an
+   overlay it gets a surface + soft shadow (functional depth). */
+.sidenote-content.sidenote-popover {
+  position: fixed;
+  left: 0;
+  top: 0;
+  margin: 0;
+  width: min(20rem, 85vw);
+  z-index: 60;
+  opacity: 1;
+  transform: none;
+  padding: 0.75rem 0.85rem;
+  box-shadow: var(--shadow-lg, 0 10px 15px -3px rgb(0 0 0 / 0.1));
+  background-color: var(--color-fd-popover, var(--color-fd-card));
+  color: var(--color-fd-popover-foreground, inherit);
+}
+
+.sidenote-paragraph {
+  display: block;
+  margin: 0.5rem 0;
+}
+
+.sidenote-paragraph:first-child {
+  margin-top: 0;
+}
+
+.sidenote-paragraph:last-child {
+  margin-bottom: 0;
+}
+
+.sidenote-content a {
+  color: var(--sidenote-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.sidenote-content code {
+  font-size: 0.85em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidenote-content {
+    transition: background-color 0.25s ease;
+  }
+}
+
+/* Safety net: side-positioned notes never render on narrow viewports, even
+   if a resize lands between layout passes. */
+@media (max-width: 1279px) {
+  .sidenote-content:not(.sidenote-popover) {
+    display: none !important;
+  }
+}

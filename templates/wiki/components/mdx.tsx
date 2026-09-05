@@ -4,6 +4,7 @@ import { CanvasPage } from '@affine-fumadocs/wiki/canvas';
 import { AffineDatabase } from '@affine-fumadocs/wiki/databases';
 import { ArticleImage } from '@affine-fumadocs/wiki/lightbox';
 import { Mermaid } from '@affine-fumadocs/wiki/mdx/mermaid';
+import { ReviewBlock } from '@affine-fumadocs/wiki/review';
 import wikiConfig from '@/affine-wiki.config';
 
 export function getMDXComponents(components?: MDXComponents): MDXComponents {
@@ -13,6 +14,7 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     ...(wikiConfig.features.databases ? { AffineDatabase } : {}),
     ...(wikiConfig.features.canvas ? { CanvasPage } : {}),
     ...(wikiConfig.features.mermaid ? { Mermaid } : {}),
+    ...(wikiConfig.features.review ? { ReviewBlock } : {}),
     ...components,
   } as MDXComponents;
 }

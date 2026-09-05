@@ -1,6 +1,6 @@
 ---
 title: Rich content
-description: Mermaid diagrams, KaTeX math, and slide mode in the wiki template.
+description: Mermaid, math, slides, citations, sidenotes, annotations, and review prompts.
 tags: [wiki, rich-content]
 slides: true
 outgoingLinks: ["/docs", "/docs/features"]
@@ -8,7 +8,8 @@ outgoingLinks: ["/docs", "/docs/features"]
 
 # Rich content
 
-This page exercises Mermaid, math, and `slides: true` routing.
+This page exercises Mermaid, math, slides, citations, sidenotes, rough
+annotations, and spaced-repetition review blocks.
 
 ## Diagram
 
@@ -25,6 +26,43 @@ Inline: $c = \pm\sqrt{a^2 + b^2}$
 $$
 \int_a^b f(x)\,dx = F(b) - F(a)
 $$
+
+## Citations
+
+Pandoc-style citations resolve against `references.bib` when
+`features.citations` is on. Example: the AFFiNE paper [@wang2022affine]
+and a handbook entry [@doe2024handbook].
+
+## Sidenotes
+
+GFM footnotes become margin notes (or popovers on narrow viewports) when
+`features.sidenotes` is enabled.[^demo]
+
+Publishers can also author `{{note}}` / `{{sidenotes[label]: note}}` syntax
+and run `transformSidenoteSyntax` before MDX sees the source — raw double
+braces must not reach the MDX parser.
+
+[^demo]: A sample sidenote. On wide layouts it sits in the margin; otherwise
+  click the marker to open a popover.
+
+## Annotations
+
+Inline markers draw at runtime with rough-notation:
+==highlight==, !!underline!!, ^^box^^, ((circle)), and ||bracket||.
+
+```highlight
+A whole-sentence highlight fence also works.
+```
+
+## Review prompts
+
+```orbit color=green
+Q: What does the publisher snapshot contain?
+A: Generated locale content ready for Fumadocs staging.
+
+Q: Where do feature flags live?
+A: In affine-wiki.config.ts via defineWikiConfig.
+```
 
 ## Slides
 

@@ -8,6 +8,10 @@
 @import '@affine-fumadocs/wiki/lightbox/css';
 @import '@affine-fumadocs/wiki/slides/slides.css';
 @import '@affine-fumadocs/wiki/canvas/css';
+@import '@affine-fumadocs/wiki/citations/css';
+@import '@affine-fumadocs/wiki/sidenotes/css';
+@import '@affine-fumadocs/wiki/annotations/css';
+@import '@affine-fumadocs/wiki/review/css';
 
 html {
   scrollbar-gutter: stable;

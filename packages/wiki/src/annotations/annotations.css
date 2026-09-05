@@ -1,0 +1,21 @@
+/* Rough-annotation colors — consumed at runtime by RoughAnnotations. */
+
+:root {
+  --ann-highlight: rgb(250 204 21 / 0.45);
+  --ann-underline: #e11d48;
+  --ann-box: #f97316;
+  --ann-circle: #16a34a;
+  --ann-bracket: #8b5cf6;
+}
+
+.dark {
+  --ann-highlight: rgb(202 138 4 / 0.4);
+  --ann-underline: #fb7185;
+  --ann-box: #fb923c;
+  --ann-circle: #4ade80;
+  --ann-bracket: #a78bfa;
+}
+
+.rough-ann {
+  display: inline;
+}

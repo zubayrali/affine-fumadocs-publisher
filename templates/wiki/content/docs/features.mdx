@@ -12,7 +12,8 @@ The template currently includes Fumadocs search and machine-readable routes,
 native AFFiNE publication properties, custom page properties, hierarchical tag
 browsing, AFFiNE document-link rewriting, backlinks, orphan detection, hover
 link previews, article lightbox galleries, AFFiNE database table / gallery /
-kanban views, and AFFiNE edgeless canvas pan/zoom maps.
+kanban views, AFFiNE edgeless canvas pan/zoom maps, and rich content
+(Mermaid, math, slides, citations, sidenotes, annotations, review prompts).
 
 ## AFFiNE document links
 
@@ -34,10 +35,16 @@ sample database with table, board, and gallery views. Feature flags live in
 See the [canvas fixture](/docs/canvas) for a published edgeless map rendered
 with React Flow. Toggle with `features.canvas`.
 
+## Rich content
+
+See the [rich content fixtures](/docs/rich-content) page for Mermaid, KaTeX,
+slides, citations (`references.bib`), sidenotes, rough annotations, and
+orbit review fences. Toggle with `features.citations`, `features.sidenotes`,
+`features.annotations`, and `features.review`.
+
 ## Still in progress
 
 Body-level note transclusion is deferred: AFFiNE's Markdown export flattens
 embed-linked documents into the same link form, so the snapshot cannot recover
 embedded bodies yet. Canvas markdown-in-node MDX previews and in-node database
-embeds are also deferred. Citations, sidenotes, and annotations remain later
-vertical slices.
+embeds are also deferred.
