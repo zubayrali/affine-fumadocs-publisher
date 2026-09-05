@@ -33,7 +33,7 @@ function run(command, args, options) {
 }
 
 async function main() {
-  const releaseDir = path.resolve(required("PUBLISHER_DEPLOY_DIR"));
+  const releaseDir = await fs.realpath(path.resolve(required("PUBLISHER_DEPLOY_DIR")));
   await fs.access(path.join(releaseDir, "index.html"));
 
   const repo = required("PUBLISHER_DEPLOY_GITHUB_REPO");
@@ -47,7 +47,7 @@ async function main() {
   try {
     await run("git", ["init"], { cwd: work });
     await run("git", ["checkout", "-B", branch], { cwd: work });
-    await fs.cp(releaseDir, work, { recursive: true });
+    await fs.cp(releaseDir, work, { recursive: true, dereference: true });
     await run("git", ["add", "-A"], { cwd: work });
     await run("git", [
       "-c", "user.name=affine-fumadocs-publisher",

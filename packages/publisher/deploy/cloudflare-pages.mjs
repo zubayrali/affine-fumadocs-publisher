@@ -37,7 +37,7 @@ function run(command, args, options) {
 }
 
 async function main() {
-  const releaseDir = path.resolve(required("PUBLISHER_DEPLOY_DIR"));
+  const releaseDir = await fs.realpath(path.resolve(required("PUBLISHER_DEPLOY_DIR")));
   await fs.access(path.join(releaseDir, "index.html"));
   const project = required("PUBLISHER_DEPLOY_CF_PROJECT");
   required("CLOUDFLARE_API_TOKEN");
