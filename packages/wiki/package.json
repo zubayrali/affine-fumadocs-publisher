@@ -140,7 +140,7 @@
     "rehype-katex": "^7.0.1",
     "remark-math": "^6.0.0",
     "rough-notation": "^0.5.1",
-    "typescript": "^6.0.3",
+    "typescript": "^7.0.2",
     "unist-util-visit": "^5.1.0"
   },
   "license": "MIT"
