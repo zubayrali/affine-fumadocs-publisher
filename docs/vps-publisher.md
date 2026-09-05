@@ -7,7 +7,8 @@ the publisher can push the immutable static tree to a free static host.
 AFFiNE (Docker) + publisher (systemd)
   → .affine-publisher/releases/current
   → PUBLISHER_DEPLOY_TARGET
-       ├─ github-pages
+       ├─ github-pages       (PAT / GITHUB_TOKEN)
+       ├─ github-pages-ssh   (deploy key; preferred on a shared VPS)
        └─ cloudflare-pages
 ```
 

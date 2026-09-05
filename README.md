@@ -145,8 +145,16 @@ Never deploy `.env.publisher` or the bridge token to the public web runtime.
 
 For a VPS that co-hosts AFFiNE and the publisher, see
 [`docs/vps-publisher.md`](./docs/vps-publisher.md). Releases can push to
-**GitHub Pages** or **Cloudflare Pages** through `PUBLISHER_DEPLOY_TARGET`
+**GitHub Pages** (`github-pages` with a PAT, or `github-pages-ssh` with a
+deploy key), or **Cloudflare Pages**, through `PUBLISHER_DEPLOY_TARGET`
 without changing the release loop.
+
+Reusable release helpers also live on the package:
+
+- `@affine-fumadocs/publisher/incremental-build` — locale fingerprint / changed-locale Next builds
+- `@affine-fumadocs/publisher/incremental-generate` — skip unchanged locale MCP exports
+- `@affine-fumadocs/publisher/releases` — debounce parse, rollback, prune
+- `@affine-fumadocs/publisher/deploy` — pluggable post-release deploy hook
 
 Install the publisher unit from a consumer app root:
 

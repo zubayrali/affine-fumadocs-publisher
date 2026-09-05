@@ -1,6 +1,7 @@
 export type PublisherDeployTarget =
   | "none"
   | "github-pages"
+  | "github-pages-ssh"
   | "cloudflare-pages"
   | "custom";
 

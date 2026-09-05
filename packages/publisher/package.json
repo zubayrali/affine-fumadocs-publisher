@@ -9,7 +9,11 @@
     "./bridge-client": { "types": "./src/bridge-client.d.ts", "default": "./src/bridge-client.mjs" },
     "./snapshot": { "types": "./src/snapshot.d.ts", "default": "./src/snapshot.mjs" },
     "./poller": { "types": "./src/poller.d.ts", "default": "./src/poller.mjs" },
-    "./service": { "types": "./src/service.d.ts", "default": "./src/service.mjs" }
+    "./service": { "types": "./src/service.d.ts", "default": "./src/service.mjs" },
+    "./deploy": { "types": "./src/deploy.d.ts", "default": "./src/deploy.mjs" },
+    "./incremental-build": { "types": "./src/incremental-build.d.ts", "default": "./src/incremental-build.mjs" },
+    "./incremental-generate": { "types": "./src/incremental-generate.d.ts", "default": "./src/incremental-generate.mjs" },
+    "./releases": { "types": "./src/releases.d.ts", "default": "./src/releases.mjs" }
   },
   "license": "MIT"
 }

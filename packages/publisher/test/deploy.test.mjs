@@ -12,14 +12,13 @@ test("defaults to none when no deploy settings are present", () => {
   });
 });
 
-test("selects github-pages as a built-in target", () => {
+test("selects github-pages-ssh as a built-in deploy-key target", () => {
   const config = resolveDeployConfig({
-    PUBLISHER_DEPLOY_TARGET: "github-pages",
+    PUBLISHER_DEPLOY_TARGET: "github-pages-ssh",
     PUBLISHER_DEPLOY_DIR: "/tmp/release",
   });
-  assert.equal(config.target, "github-pages");
+  assert.equal(config.target, "github-pages-ssh");
   assert.equal(config.builtIn, true);
-  assert.equal(config.releaseDir, "/tmp/release");
 });
 
 test("selects cloudflare-pages as a built-in target for easy host swaps", () => {

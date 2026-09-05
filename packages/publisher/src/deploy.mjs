@@ -17,6 +17,7 @@ import { fileURLToPath } from "node:url";
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const TARGET_SCRIPTS = Object.freeze({
   "github-pages": path.join(HERE, "..", "deploy", "github-pages.mjs"),
+  "github-pages-ssh": path.join(HERE, "..", "deploy", "github-pages-ssh.mjs"),
   "cloudflare-pages": path.join(HERE, "..", "deploy", "cloudflare-pages.mjs"),
 });
 
@@ -29,7 +30,7 @@ export function resolveDeployConfig(env = process.env) {
     ? env.PUBLISHER_DEPLOY_TARGET.trim().toLowerCase()
     : "";
   const target = rawTarget || (command ? "custom" : "none");
-  const allowed = new Set(["none", "github-pages", "cloudflare-pages", "custom"]);
+  const allowed = new Set(["none", "github-pages", "github-pages-ssh", "cloudflare-pages", "custom"]);
   if (!allowed.has(target)) {
     throw new Error(
       `PUBLISHER_DEPLOY_TARGET must be one of ${[...allowed].join(", ")} (got ${target}).`,
@@ -51,7 +52,7 @@ export function resolveDeployConfig(env = process.env) {
     target,
     command: target === "custom" ? command : "",
     releaseDir: resolveReleaseDir(env),
-    builtIn: target === "github-pages" || target === "cloudflare-pages",
+    builtIn: target === "github-pages" || target === "github-pages-ssh" || target === "cloudflare-pages",
   };
 }
 
